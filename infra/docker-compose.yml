@@ -1,0 +1,129 @@
+name: testng-api-automation-infra
+
+# Local support infrastructure for this repo: SonarQube (code-quality-agent /
+# check-code-quality skill), Jenkins (CI), Elasticsearch + Grafana (test
+# report / log dashboards). Dev-only defaults throughout — see .env.example
+# to override versions, ports, and credentials without editing this file.
+
+networks:
+  local-infra:
+    driver: bridge
+
+volumes:
+  es_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_db_data:
+  grafana_data:
+  jenkins_home:
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION:-8.15.3}
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms${ES_HEAP:-1g} -Xmx${ES_HEAP:-1g}"
+    ports:
+      - "${ES_HTTP_PORT:-9200}:9200"
+      - "${ES_TRANSPORT_PORT:-9300}:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - local-infra
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health | grep -Eq '\"status\":\"(green|yellow)\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  sonarqube-db:
+    image: postgres:${POSTGRES_VERSION:-15}
+    container_name: sonarqube-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${SONAR_DB_USER:-sonar}
+      - POSTGRES_PASSWORD=${SONAR_DB_PASSWORD:-sonar}
+      - POSTGRES_DB=${SONAR_DB_NAME:-sonar}
+    volumes:
+      - sonarqube_db_data:/var/lib/postgresql/data
+    networks:
+      - local-infra
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SONAR_DB_USER:-sonar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  sonarqube:
+    image: sonarqube:${SONARQUBE_VERSION:-26.8.0.126808-community}
+    container_name: sonarqube
+    restart: unless-stopped
+    depends_on:
+      sonarqube-db:
+        condition: service_healthy
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/${SONAR_DB_NAME:-sonar}
+      - SONAR_JDBC_USERNAME=${SONAR_DB_USER:-sonar}
+      - SONAR_JDBC_PASSWORD=${SONAR_DB_PASSWORD:-sonar}
+    ports:
+      - "${SONARQUBE_PORT:-9000}:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc: 8192
+    networks:
+      - local-infra
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/api/system/status | grep -q '\"status\":\"UP\"'"]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_VERSION:-11.2.0}
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - local-infra
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/api/health | grep -Eq '\"database\":[[:space:]]*\"ok\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  jenkins:
+    image: jenkins/jenkins:${JENKINS_VERSION:-lts-jdk17}
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "${JENKINS_HTTP_PORT:-8080}:8080"
+      - "${JENKINS_AGENT_PORT:-50000}:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - local-infra
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf -o /dev/null -w '%{http_code}' http://localhost:8080/login | grep -qE '200|403'"]
+      interval: 15s
+      timeout: 5s
+      retries: 30

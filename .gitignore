@@ -1,0 +1,62 @@
+# Build output
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+dependency-reduced-pom.xml
+
+# TestNG / test reports
+test-output/
+surefire-reports/
+failsafe-reports/
+allure-results/
+allure-report/
+extent-reports/
+# Local Allure CLI binary cache downloaded by the allure-maven plugin
+.allure/
+
+# Logs
+*.log
+logs/
+
+# Local infra runtime data (DB dumps, etc.) - never commit
+infra/backups/
+
+# IDE - IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+
+# IDE - VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+*.local.properties
+# Pre-existing local secret file at repo root - migrated to the
+# ConfigLoader env-var-override mechanism (see EnvConfig/ConfigLoader).
+# Kept ignored as a belt-and-suspenders measure even though it has never
+# been committed.
+APIKey.txt
+
+# Claude Code local settings - the harness may record literal command
+# strings (including secrets passed via env vars on the command line,
+# e.g. SONAR_TOKEN) into its local permission-allow list. Never commit.
+.claude/settings.local.json
+.claude
+docs
