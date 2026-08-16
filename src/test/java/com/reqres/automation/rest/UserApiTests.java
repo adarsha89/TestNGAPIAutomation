@@ -4,12 +4,10 @@ import com.reqres.automation.assertions.ResponseAssertions;
 import com.reqres.automation.assertions.SchemaAssertions;
 import com.reqres.automation.base.BaseRestTest;
 import com.reqres.automation.models.rest.UserRequest;
-import com.reqres.automation.models.rest.UserResponse;
 import com.reqres.automation.testdata.UserDataBuilder;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -22,14 +20,11 @@ public class UserApiTests extends BaseRestTest {
     @Test(groups = {"rest", "smoke", "regression"})
     @Description("GET a known user by id, validate status, JSON schema, and a field value")
     public void shouldFetchExistingUserById() {
-        Response response = client().getUserById(2);
-
+        Response response = restClient().getUserById(2);
         ResponseAssertions.assertStatusCode(response, 200);
         SchemaAssertions.assertMatchesSchema(response, "schemas/user-schema.json");
-
-        UserResponse user = response.as(UserResponse.class);
         ResponseAssertions.assertBodyValueEquals(response, "data.id", 2);
-        Assert.assertNotNull(user.getData().getEmail());
+        ResponseAssertions.assertBodyValuePresent(response, "data.email");
     }
 
     @Test(groups = {"rest", "smoke", "regression"})

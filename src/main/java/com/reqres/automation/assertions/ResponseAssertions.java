@@ -36,4 +36,10 @@ public final class ResponseAssertions {
                         + ", Actual: " + actualValue);
         return response;
     }
+
+    public static Response assertBodyValuePresent(Response response, String bodyPath) {
+        Object actualValue = response.jsonPath().get(bodyPath);
+        Assert.assertNotNull(actualValue, "Expected a value present at body path '" + bodyPath + "', but found none");
+        return response;
+    }
 }

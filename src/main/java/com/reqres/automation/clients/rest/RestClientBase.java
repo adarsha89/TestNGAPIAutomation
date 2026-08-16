@@ -12,7 +12,7 @@ import io.restassured.specification.RequestSpecification;
  * enforced HTTP timeout, masked logging filter, Allure attachment filter)
  * for all REST clients.
  */
-public abstract class RestClientBase implements ApiClient {
+public class RestClientBase implements ApiClient {
 
     protected RequestSpecification spec;
 

@@ -1,7 +1,9 @@
 package com.reqres.automation.clients.websocket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reqres.automation.clients.ApiClient;
 import com.reqres.automation.config.EnvConfig;
+import com.reqres.automation.models.websocket.WsMessage;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class WebSocketTestClient implements ApiClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketTestClient.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final BlockingQueue<String> receivedMessages = new LinkedBlockingQueue<>();
     private final BlockingQueue<byte[]> receivedBinaryMessages = new LinkedBlockingQueue<>();
@@ -98,6 +101,15 @@ public class WebSocketTestClient implements ApiClient {
             throw new IllegalStateException("WebSocket client is not connected. Call connect() first.");
         }
         client.send(message);
+    }
+
+    /** Serializes {@code message} to JSON and sends it as a text frame. */
+    public void sendMessage(WsMessage message) {
+        try {
+            send(MAPPER.writeValueAsString(message));
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to serialize WsMessage for sending: " + message, e);
+        }
     }
 
     /** Sends a binary frame. */

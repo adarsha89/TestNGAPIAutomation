@@ -35,6 +35,17 @@ public final class GraphQLPayloadBuilder {
     private static final String COUNTRY_TYPE_INTROSPECTION_QUERY =
             "{ __type(name: \"Country\") { fields { name } } }";
 
+    /**
+     * Aliased dual-root-field query combining {@code country(code)} and
+     * {@code continent(code)} in a single request, used to cross-check
+     * consistency between the two root fields against the same response.
+     */
+    private static final String COUNTRY_CONTINENT_CONSISTENCY_QUERY =
+            "query GetCountryContinentConsistency($countryCode: ID!, $continentCode: ID!) { "
+                    + "countryResult: country(code: $countryCode) { code name continent { code name } "
+                    + "languages { code name } } "
+                    + "continentResult: continent(code: $continentCode) { name countries { code name } } }";
+
     private GraphQLPayloadBuilder() {
     }
 
@@ -93,6 +104,14 @@ public final class GraphQLPayloadBuilder {
     public static GraphQLRequest forCountryTypeIntrospection() {
         GraphQLRequest request = new GraphQLRequest();
         request.setQuery(COUNTRY_TYPE_INTROSPECTION_QUERY);
+        return request;
+    }
+
+    /** Aliased query cross-checking a country's continent/languages against the continent's own data. */
+    public static GraphQLRequest forCountryContinentConsistencyQuery(String countryCode, String continentCode) {
+        GraphQLRequest request = new GraphQLRequest();
+        request.setQuery(COUNTRY_CONTINENT_CONSISTENCY_QUERY);
+        request.setVariables(Map.of("countryCode", countryCode, "continentCode", continentCode));
         return request;
     }
 }

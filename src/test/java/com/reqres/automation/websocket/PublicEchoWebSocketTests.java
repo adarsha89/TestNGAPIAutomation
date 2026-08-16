@@ -1,9 +1,9 @@
 package com.reqres.automation.websocket;
 
+import com.reqres.automation.assertions.WebSocketAssertions;
 import com.reqres.automation.base.BasePublicWebSocketTest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -24,10 +24,9 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
     @Description("Connection establishes and the unsolicited server greeting is drained as connection-lifecycle "
             + "noise, never compared against a sent payload")
     public void shouldDrainUnsolicitedGreetingOnConnect() {
-        Assert.assertTrue(client().isOpen(), "Expected the connection to be open after connect");
+        WebSocketAssertions.assertOpen(client());
         String greeting = connectionGreeting();
-        Assert.assertNotNull(greeting, "Expected an unsolicited greeting message to have been drained on connect");
-        Assert.assertFalse(greeting.isBlank(), "Expected the unsolicited greeting to be non-blank");
+        WebSocketAssertions.assertNonBlankTextMessage(greeting, "an unsolicited greeting message to have been drained on connect");
     }
 
     @DataProvider(name = "textPayloads")
@@ -43,12 +42,9 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
     @Description("A sent text payload is echoed back exactly, across representative sizes (empty/short/large)")
     public void shouldEchoTextPayloadAcrossSizes(String caseName, String payload) throws InterruptedException {
         client().send(payload);
-        String echoed = client().awaitMessage(10);
+        String echoed = WebSocketAssertions.assertMessageReceived(client(), 10, caseName);
 
-        Assert.assertNotNull(echoed, "[" + caseName + "] Did not receive an echo reply within the timeout");
-        Assert.assertEquals(echoed, payload,
-                "[" + caseName + "] Echoed text did not match the sent text. Sent: '" + payload + "', received: '"
-                        + echoed + "'");
+        WebSocketAssertions.assertPayloadEquals(echoed, payload, caseName);
     }
 
     @Test(groups = {"websocket", "external", "regression"})
@@ -57,10 +53,9 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
         byte[] payload = "binary-echo".getBytes(StandardCharsets.UTF_8);
 
         client().sendBinary(payload);
-        byte[] echoed = client().awaitBinaryMessage(10);
+        byte[] echoed = WebSocketAssertions.assertBinaryMessageReceived(client(), 10);
 
-        Assert.assertNotNull(echoed, "Did not receive a binary echo reply within the timeout");
-        Assert.assertEquals(echoed, payload, "Echoed binary payload did not match the sent binary payload");
+        WebSocketAssertions.assertPayloadEquals(echoed, payload);
     }
 
     @Test(groups = {"websocket", "external", "regression"})
@@ -71,35 +66,31 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
         String third = "message-three";
 
         client().send(first);
-        String echoedFirst = client().awaitMessage(10);
+        String echoedFirst = WebSocketAssertions.assertMessageReceived(client(), 10, "first");
         client().send(second);
-        String echoedSecond = client().awaitMessage(10);
+        String echoedSecond = WebSocketAssertions.assertMessageReceived(client(), 10, "second");
         client().send(third);
-        String echoedThird = client().awaitMessage(10);
+        String echoedThird = WebSocketAssertions.assertMessageReceived(client(), 10, "third");
 
-        Assert.assertEquals(echoedFirst, first, "First echoed message did not match what was sent");
-        Assert.assertEquals(echoedSecond, second, "Second echoed message did not match what was sent");
-        Assert.assertEquals(echoedThird, third, "Third echoed message did not match what was sent");
+        WebSocketAssertions.assertPayloadEquals(echoedFirst, first, "first");
+        WebSocketAssertions.assertPayloadEquals(echoedSecond, second, "second");
+        WebSocketAssertions.assertPayloadEquals(echoedThird, third, "third");
     }
 
     @Test(groups = {"websocket", "external", "regression"}, timeOut = 20000)
     @Description("A clean client-initiated close is observable deterministically, without an arbitrary sleep")
     public void shouldCleanlyCloseAndObserveClosedState() throws InterruptedException {
         client().close();
-        boolean closed = client().awaitClosed(15);
 
-        Assert.assertTrue(closed, "Expected the connection to reach a closed state within the timeout");
-        Assert.assertEquals(client().getLastCloseCode(), 1000, "Expected a normal closure close code (1000)");
+        WebSocketAssertions.assertClosedWithCode(client(), 15, 1000);
     }
 
     @Test(groups = {"websocket", "external", "regression"})
     @Description("When no message is sent within a reasonable window, awaitMessage returns null without hanging "
             + "and the connection remains open")
     public void shouldReturnNullOnIdleWindowWithoutHanging() throws InterruptedException {
-        String message = client().awaitMessage(3);
-
-        Assert.assertNull(message, "Expected no message to arrive during the idle window");
-        Assert.assertTrue(client().isOpen(), "Expected the connection to remain open after the idle window");
+        WebSocketAssertions.assertNoMessageReceived(client(), 3);
+        WebSocketAssertions.assertOpen(client());
     }
 
     @Test(groups = {"websocket", "external", "regression"}, timeOut = 20000)
@@ -107,9 +98,7 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
             + "hanging")
     public void shouldReachClosedStateAfterAbruptClose() throws InterruptedException {
         client().close();
-        boolean closed = client().awaitClosed(15);
 
-        Assert.assertTrue(closed, "Expected the connection to reach a closed state within the timeout after an "
-                + "abrupt close");
+        WebSocketAssertions.assertClosed(client(), 15);
     }
 }

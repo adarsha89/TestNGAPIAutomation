@@ -29,12 +29,19 @@ src/main/java/com/reqres/automation/
   clients/      ApiClient, ClientFactory,           — factory/strategy dispatch
                 RequestSpecFactory, RestAssuredConfigFactory
     rest/       RestClientBase, UserRestClient
-    graphql/    GraphQLClient
+    graphql/    GraphQLClient, GraphQLStubServer     — test classes only stub/configure
+                GraphQL responses through GraphQLStubServer, never WireMock directly
     websocket/  WebSocketTestClient
-    webhook/    WebhookReceiver                     — embeds WireMock
+    webhook/    WebhookReceiver                     — embeds WireMock; exposes
+                stubIncomingCallResponse(...) so test classes never drive WireMock's
+                stubbing DSL directly
   models/       rest/graphql/websocket request & response POJOs
   testdata/     UserDataBuilder, GraphQLPayloadBuilder
-  assertions/   ResponseAssertions, SchemaAssertions, GraphQLAssertions
+  assertions/   ResponseAssertions, SchemaAssertions, GraphQLAssertions,
+                WebSocketAssertions, WebhookAssertions               — every protocol's
+                test code (REST, GraphQL, WebSocket, webhook) calls into these rather
+                than writing inline response parsing, field navigation, or direct
+                TestNG Assert/WireMock-verify calls
   util/         Constants, LogMasker
 
 src/test/java/com/reqres/automation/
@@ -48,6 +55,15 @@ src/test/resources/
 infra/          docker-compose.yml — local SonarQube, Grafana, Elasticsearch, Jenkins
 .github/workflows/api-tests.yml    — CI: PR → smoke, schedule/dispatch → regression
 ```
+
+### Test-writing convention
+
+Every test class, across all four protocol areas (REST, GraphQL, WebSocket, webhook), only
+orchestrates a call into `clients/` and a check into `assertions/`, plus TestNG
+annotations/data providers. A test class never constructs a raw request/connection, never
+drives a mock's stubbing/verification DSL, never parses a raw response, and never asserts
+directly — if a helper doesn't yet exist for something a test needs, the gap gets filled in
+`clients/`/`assertions/`, not inlined into the test.
 
 ## Prerequisites
 
