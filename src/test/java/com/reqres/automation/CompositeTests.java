@@ -1,25 +1,21 @@
-package com.reqres.automation.graphql;
+package com.reqres.automation;
 
 import com.reqres.automation.assertions.GraphQLAssertions;
 import com.reqres.automation.assertions.ResponseAssertions;
-import com.reqres.automation.base.BaseGraphQLTest;
+import com.reqres.automation.assertions.SchemaAssertions;
+import com.reqres.automation.base.BaseGraphQLInterface;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.clients.graphql.GraphQLStubServer;
 import com.reqres.automation.models.graphql.GraphQLRequest;
 import com.reqres.automation.testdata.GraphQLPayloadBuilder;
 import io.qameta.allure.Description;
-import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- * Sample GraphQL coverage. No real GraphQL endpoint exists for this repo
- * yet, so this posts a canned query to a local WireMock stub returning a
- * fixed response - swap for a real endpoint the moment one exists.
- */
-@Story("GraphQL user query (stubbed)")
-public class UserQueryTests extends BaseGraphQLTest {
+public class CompositeTests implements BaseRestInterface, BaseGraphQLInterface {
+
 
     private static final String USER_NAME = "George Bluth";
     private static final String STUB_PATH = "/graphql";
@@ -47,5 +43,16 @@ public class UserQueryTests extends BaseGraphQLTest {
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
         GraphQLAssertions.assertFieldEquals(response, "user.name", USER_NAME);
+    }
+
+    @Test(groups = {"rest", "smoke", "regression"})
+    @Description("GET a known user by id, validate status, JSON schema, and a field value")
+    public void shouldFetchExistingUserById() {
+        Response response = restClient().getUserById(2);
+
+        ResponseAssertions.assertStatusCode(response, 200);
+        SchemaAssertions.assertMatchesSchema(response, "schemas/user-schema.json");
+        ResponseAssertions.assertBodyValueEquals(response, "data.id", 2);
+        ResponseAssertions.assertBodyValuePresent(response, "data.email");
     }
 }

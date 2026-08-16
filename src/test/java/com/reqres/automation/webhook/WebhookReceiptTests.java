@@ -1,7 +1,7 @@
 package com.reqres.automation.webhook;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.reqres.automation.assertions.ResponseAssertions;
+import com.reqres.automation.assertions.WebhookAssertions;
 import com.reqres.automation.base.BaseWebhookTest;
 import com.reqres.automation.clients.webhook.WebhookReceiver;
 import io.qameta.allure.Description;
@@ -26,14 +26,27 @@ public class WebhookReceiptTests extends BaseWebhookTest {
     public void shouldRecordIncomingWebhookCall() {
         WebhookReceiver receiver = receiver();
 
-        receiver.getServer().stubFor(WireMock.post(WireMock.urlEqualTo(WEBHOOK_PATH))
-                .willReturn(WireMock.aResponse().withStatus(200).withBody("{\"received\":true}")));
+        receiver.stubIncomingCallResponse(WEBHOOK_PATH, 200, "{\"received\":true}");
 
         Response response = receiver.sendCallerRequest(WEBHOOK_PATH, PAYLOAD);
 
         ResponseAssertions.assertStatusCode(response, 200);
 
-        receiver.getServer().verify(WireMock.postRequestedFor(WireMock.urlEqualTo(WEBHOOK_PATH))
-                .withRequestBody(WireMock.equalToJson(PAYLOAD)));
+        WebhookAssertions.assertCallReceived(receiver, WEBHOOK_PATH, PAYLOAD);
+    }
+
+    @Test(groups = {"webhook", "smoke", "regression"})
+    @Description("A call to an unrelated path is not recorded, even though the receiver has other genuine "
+            + "recorded traffic")
+    public void shouldNotRecordWebhookCallForUnrelatedPath() {
+        WebhookReceiver receiver = receiver();
+
+        receiver.stubIncomingCallResponse(WEBHOOK_PATH, 200, "{\"received\":true}");
+
+        Response response = receiver.sendCallerRequest(WEBHOOK_PATH, PAYLOAD);
+
+        ResponseAssertions.assertStatusCode(response, 200);
+
+        WebhookAssertions.assertNoCallReceived(receiver, "/webhook/order-cancelled");
     }
 }

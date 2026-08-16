@@ -12,26 +12,6 @@ import org.testng.annotations.BeforeClass;
  * finishes. Parallel-safe: no shared mutable instance state between test
  * methods running on different threads.
  */
-public abstract class BaseRestTest {
+public abstract class BaseRestTest implements BaseRestInterface{
 
-    private static final ThreadLocal<UserRestClient> CLIENT = new ThreadLocal<>();
-
-    @BeforeClass(alwaysRun = true)
-    public void setUpRestClient() {
-        UserRestClient client = (UserRestClient) ClientFactory.create(ClientFactory.Protocol.REST, ConfigLoader.load());
-        CLIENT.set(client);
-    }
-
-    @AfterClass(alwaysRun = true)
-    public void tearDownRestClient() {
-        UserRestClient client = CLIENT.get();
-        if (client != null) {
-            client.close();
-        }
-        CLIENT.remove();
-    }
-
-    protected UserRestClient client() {
-        return CLIENT.get();
-    }
 }

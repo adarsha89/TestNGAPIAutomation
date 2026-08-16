@@ -1,6 +1,7 @@
 package com.reqres.automation.clients.webhook;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.reqres.automation.clients.ApiClient;
 import com.reqres.automation.config.EnvConfig;
@@ -48,6 +49,20 @@ public class WebhookReceiver implements ApiClient {
                 .body(jsonBody)
                 .when()
                 .post(path);
+    }
+
+    /**
+     * Configures this receiver to respond to POSTs at {@code path} with the
+     * given status and JSON body - the wrapper test classes must go through
+     * instead of driving WireMock's stubbing DSL directly.
+     *
+     * @param path              the webhook path to stub (e.g. {@code /webhook/order-created})
+     * @param status            the HTTP status code the stub responds with
+     * @param responseJsonBody  the raw JSON response body the stub returns
+     */
+    public void stubIncomingCallResponse(String path, int status, String responseJsonBody) {
+        server.stubFor(WireMock.post(WireMock.urlEqualTo(path))
+                .willReturn(WireMock.aResponse().withStatus(status).withBody(responseJsonBody)));
     }
 
     @Override
