@@ -2,7 +2,7 @@ package com.reqres.automation.rest;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.reqres.automation.base.BaseRestInterface;
-import com.reqres.automation.base.BaseWebhookTest;
+import com.reqres.automation.base.BaseWebhookInterface;
 import com.reqres.automation.clients.rest.RestStubServer;
 import com.reqres.automation.helpers.FallbackHelper;
 import com.reqres.automation.testdata.ResponseExpectation;
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
  * {@code WebhookReceiver} serves as the fallback target.
  */
 @Story("Config-gated per-endpoint-key 503 webhook fallback")
-public class Fallback503Tests extends BaseWebhookTest implements BaseRestInterface {
+public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface {
 
     private static final String FALLBACK_ON_KEY = "fallbackDemoOn";
     private static final String FALLBACK_OFF_KEY = "fallbackDemoOff";

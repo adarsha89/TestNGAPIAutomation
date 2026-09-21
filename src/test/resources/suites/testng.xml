@@ -3,7 +3,6 @@
 <suite name="ReqresAutomationSuite" parallel="classes" thread-count="4">
 
     <listeners>
-        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
         <listener class-name="com.reqres.automation.CustomTestNGListener"/>
     </listeners>
 

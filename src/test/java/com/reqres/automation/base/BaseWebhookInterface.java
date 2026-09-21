@@ -12,18 +12,18 @@ import org.testng.annotations.BeforeClass;
  * external caller hitting the "webhook" and assert on what WireMock
  * recorded.
  */
-public abstract class BaseWebhookTest {
+public interface BaseWebhookInterface {
 
-    private static final ThreadLocal<WebhookService> SERVICE = new ThreadLocal<>();
+    ThreadLocal<WebhookService> SERVICE = new ThreadLocal<>();
 
     @BeforeClass(alwaysRun = true)
-    public void startWebhookReceiver() {
+    default void startWebhookReceiver() {
         WebhookReceiver receiver = ClientLifecycleHelper.createWebhookReceiver();
         SERVICE.set(new WebhookService(receiver));
     }
 
     @AfterClass(alwaysRun = true)
-    public void stopWebhookReceiver() {
+    default void stopWebhookReceiver() {
         WebhookService service = SERVICE.get();
         if (service != null) {
             service.close();
@@ -31,7 +31,7 @@ public abstract class BaseWebhookTest {
         SERVICE.remove();
     }
 
-    protected WebhookService webhookService() {
+    default WebhookService webhookService() {
         return SERVICE.get();
     }
 }

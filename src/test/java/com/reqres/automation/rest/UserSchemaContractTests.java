@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.testdata.ResponseExpectation;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
  * is reported independently of functional test outcomes.
  */
 @Story("Reqres user API — contract")
-public class UserSchemaContractTests extends BaseRestTest {
+public class UserSchemaContractTests implements BaseRestInterface {
 
     @Test(groups = {"rest", "contract"})
     @Description("GET a known user by id and validate the response against the tightened JSON schema contract")
