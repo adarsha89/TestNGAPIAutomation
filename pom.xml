@@ -30,6 +30,7 @@
         <logback.version>1.5.6</logback.version>
         <java-websocket.version>1.5.6</java-websocket.version>
         <wiremock.version>2.35.2</wiremock.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencyManagement>
@@ -106,6 +107,14 @@
             <artifactId>wiremock-jre8</artifactId>
             <version>${wiremock.version}</version>
         </dependency>
+
+        <!-- Compile-time boilerplate generation for models -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -115,6 +124,17 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -122,7 +142,7 @@
                 <version>3.2.5</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/suites/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <groups>${groups}</groups>
                 </configuration>

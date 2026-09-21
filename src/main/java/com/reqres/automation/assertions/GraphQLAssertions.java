@@ -65,7 +65,10 @@ public final class GraphQLAssertions {
     /** Asserts the value at {@code dataPath} (relative to {@code data}) equals {@code expectedValue}. */
     public static Response assertFieldEquals(Response response, String dataPath, String expectedValue) {
         JsonNode field = navigate(dataFromResponse(response), dataPath);
-        Assert.assertNotNull(field, "Expected a value at data path '" + dataPath + "', but navigation returned nothing");
+        if (field == null) {
+            Assert.fail("Expected a value at data path '" + dataPath + "', but navigation returned nothing");
+            return response;
+        }
         Assert.assertEquals(field.asText(), expectedValue,
                 "Unexpected value at data path '" + dataPath + "'");
         return response;
@@ -106,8 +109,10 @@ public final class GraphQLAssertions {
     public static Response assertArrayContainsMatchingElement(Response response, String arrayDataPath,
                                                                 Map<String, String> expectedFieldValues) {
         JsonNode array = navigate(dataFromResponse(response), arrayDataPath);
-        Assert.assertTrue(array != null && array.isArray(),
-                "Expected an array at data path '" + arrayDataPath + "'");
+        if (array == null || !array.isArray()) {
+            Assert.fail("Expected an array at data path '" + arrayDataPath + "'");
+            return response;
+        }
         boolean matches = StreamSupport.stream(array.spliterator(), false)
                 .anyMatch(element -> expectedFieldValues.entrySet().stream()
                         .allMatch(entry -> element.get(entry.getKey()) != null
@@ -125,11 +130,13 @@ public final class GraphQLAssertions {
     public static Response assertArrayFieldValuesContainAll(Response response, String arrayDataPath, String fieldName,
                                                               List<String> expectedValues) {
         JsonNode array = navigate(dataFromResponse(response), arrayDataPath);
-        Assert.assertTrue(array != null && array.isArray(),
-                "Expected an array at data path '" + arrayDataPath + "'");
+        if (array == null || !array.isArray()) {
+            Assert.fail("Expected an array at data path '" + arrayDataPath + "'");
+            return response;
+        }
         List<String> actualValues = StreamSupport.stream(array.spliterator(), false)
                 .map(element -> element.get(fieldName).asText())
-                .collect(Collectors.toList());
+                .toList();
         for (String expectedValue : expectedValues) {
             Assert.assertTrue(actualValues.contains(expectedValue),
                     "Expected '" + arrayDataPath + "' field '" + fieldName + "' values to contain '" + expectedValue

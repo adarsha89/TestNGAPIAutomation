@@ -135,17 +135,8 @@ public class WebSocketTestClient implements ApiClient {
         return client != null && client.isOpen();
     }
 
-    /**
-     * Polls at a short interval until the connection reports closed (both
-     * {@link #isOpen()} is false and the {@code onClose} callback has fired,
-     * so {@link #getLastCloseCode()}/{@link #getLastCloseReason()} are
-     * guaranteed populated by the time this returns true) or
-     * {@code timeoutSeconds} elapses. Bounded by design (no unbounded block)
-     * since the underlying client library's {@code closeBlocking()} has no
-     * timeout parameter in the pinned version.
-     *
-     * @return true if the connection reached a closed state within the timeout
-     */
+    // polls until closed (isOpen() false and onClose fired) or the timeout elapses - closeBlocking()
+    // in the pinned client library version has no timeout param, so we poll instead
     public boolean awaitClosed(long timeoutSeconds) throws InterruptedException {
         long deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(timeoutSeconds);
         while (System.currentTimeMillis() < deadline) {

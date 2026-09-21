@@ -3,7 +3,7 @@ package com.reqres.automation.clients.rest;
 import com.reqres.automation.clients.ApiClient;
 import com.reqres.automation.clients.RequestSpecFactory;
 import com.reqres.automation.config.EnvConfig;
-import com.reqres.automation.util.Constants;
+import com.reqres.automation.utils.Constants;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 

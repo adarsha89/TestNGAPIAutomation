@@ -4,6 +4,7 @@ import com.reqres.automation.assertions.ResponseAssertions;
 import com.reqres.automation.assertions.WebhookAssertions;
 import com.reqres.automation.base.BaseWebhookTest;
 import com.reqres.automation.clients.webhook.WebhookReceiver;
+import com.reqres.automation.dataproviders.WebhookReceiptNegativeDataProvider;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
@@ -48,5 +49,40 @@ public class WebhookReceiptTests extends BaseWebhookTest {
         ResponseAssertions.assertStatusCode(response, 200);
 
         WebhookAssertions.assertNoCallReceived(receiver, "/webhook/order-cancelled");
+    }
+
+    @Test(groups = {"webhook", "negative", "regression"},
+            dataProvider = "mismatchedPayloads", dataProviderClass = WebhookReceiptNegativeDataProvider.class)
+    @Description("A call sent to the expected path but with a mismatched payload is recorded at the path, "
+            + "but not as a match for the originally expected payload")
+    public void shouldNotTreatPayloadMismatchAsExpectedReceipt(String caseName, String mismatchedPayload) {
+        WebhookReceiver receiver = receiver();
+        receiver.reset();
+
+        receiver.stubIncomingCallResponse(WEBHOOK_PATH, 200, "{\"received\":true}");
+
+        Response response = receiver.sendCallerRequest(WEBHOOK_PATH, mismatchedPayload);
+
+        ResponseAssertions.assertStatusCode(response, 200);
+
+        WebhookAssertions.assertCallReceivedWithDifferentPayload(receiver, WEBHOOK_PATH, PAYLOAD);
+    }
+
+    @Test(groups = {"webhook", "negative", "regression"},
+            dataProvider = "mismatchedPaths", dataProviderClass = WebhookReceiptNegativeDataProvider.class)
+    @Description("A call actually sent to a path other than the expected path is recorded at that "
+            + "mismatched path, but does not count toward the expected path's own matched-call record")
+    public void shouldNotTreatCallToDifferentPathAsReceivedForExpectedPath(String caseName, String mismatchedPath) {
+        WebhookReceiver receiver = receiver();
+        receiver.reset();
+
+        receiver.stubIncomingCallResponse(WEBHOOK_PATH, 200, "{\"received\":true}");
+        Response expectedPathResponse = receiver.sendCallerRequest(WEBHOOK_PATH, PAYLOAD);
+        ResponseAssertions.assertStatusCode(expectedPathResponse, 200);
+
+        receiver.sendCallerRequest(mismatchedPath, PAYLOAD);
+
+        WebhookAssertions.assertCallReceived(receiver, mismatchedPath, PAYLOAD);
+        WebhookAssertions.assertCallReceivedExactly(receiver, WEBHOOK_PATH, PAYLOAD, 1);
     }
 }

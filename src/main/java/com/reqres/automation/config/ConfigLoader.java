@@ -1,6 +1,6 @@
 package com.reqres.automation.config;
 
-import com.reqres.automation.util.Constants;
+import com.reqres.automation.utils.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,9 +36,9 @@ public final class ConfigLoader {
         String env = System.getProperty(Constants.ENV_SYSTEM_PROPERTY, Constants.DEFAULT_ENV);
 
         Properties properties = new Properties();
-        loadResourceInto(properties, "config/" + Constants.COMMON_CONFIG_FILE, true);
-        loadResourceInto(properties, "config/" + env + ".properties", true);
-        loadResourceInto(properties, "config/" + env + ".local.properties", false);
+        loadResourceInto(properties, Constants.CONFIG_DIR + Constants.COMMON_CONFIG_FILE, true);
+        loadResourceInto(properties, Constants.CONFIG_DIR + env + ".properties", true);
+        loadResourceInto(properties, Constants.CONFIG_DIR + env + ".local.properties", false);
 
         applyEnvironmentOverrides(properties);
 

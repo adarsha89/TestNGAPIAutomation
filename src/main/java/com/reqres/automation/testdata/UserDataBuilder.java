@@ -1,6 +1,6 @@
 package com.reqres.automation.testdata;
 
-import com.reqres.automation.models.rest.UserRequest;
+import com.reqres.automation.models.rest.User;
 
 import java.util.UUID;
 
@@ -13,8 +13,11 @@ public final class UserDataBuilder {
     private UserDataBuilder() {
     }
 
-    public static UserRequest uniqueUser() {
+    public static User uniqueUser() {
         String suffix = UUID.randomUUID().toString().substring(0, 8);
-        return new UserRequest("qa-user-" + suffix, "automation-" + suffix);
+        return User.builder()
+                .name("qa-user-" + suffix)
+                .job("automation-" + suffix)
+                .build();
     }
 }

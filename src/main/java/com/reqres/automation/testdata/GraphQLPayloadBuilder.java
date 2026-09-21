@@ -35,11 +35,7 @@ public final class GraphQLPayloadBuilder {
     private static final String COUNTRY_TYPE_INTROSPECTION_QUERY =
             "{ __type(name: \"Country\") { fields { name } } }";
 
-    /**
-     * Aliased dual-root-field query combining {@code country(code)} and
-     * {@code continent(code)} in a single request, used to cross-check
-     * consistency between the two root fields against the same response.
-     */
+    // combines country(code) and continent(code) via aliases to cross-check both root fields in one response
     private static final String COUNTRY_CONTINENT_CONSISTENCY_QUERY =
             "query GetCountryContinentConsistency($countryCode: ID!, $continentCode: ID!) { "
                     + "countryResult: country(code: $countryCode) { code name continent { code name } "

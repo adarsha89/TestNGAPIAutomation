@@ -42,4 +42,11 @@ public final class ResponseAssertions {
         Assert.assertNotNull(actualValue, "Expected a value present at body path '" + bodyPath + "', but found none");
         return response;
     }
+
+    public static Response assertBodyValueAbsent(Response response, String bodyPath) {
+        Object actualValue = response.jsonPath().get(bodyPath);
+        Assert.assertNull(actualValue,
+                "Expected no value at body path '" + bodyPath + "', but found: " + actualValue);
+        return response;
+    }
 }

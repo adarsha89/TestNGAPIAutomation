@@ -14,30 +14,32 @@ public final class WebSocketAssertions {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    private static final String TIMEOUT_SUFFIX = "s timeout";
+
     private WebSocketAssertions() {
     }
 
     public static String assertMessageReceived(WebSocketTestClient client, long timeoutSeconds) throws InterruptedException {
         String message = client.awaitMessage(timeoutSeconds);
-        Assert.assertNotNull(message, "Did not receive a message within " + timeoutSeconds + "s timeout");
+        Assert.assertNotNull(message, "Did not receive a message within " + timeoutSeconds + TIMEOUT_SUFFIX);
         return message;
     }
 
     public static String assertMessageReceived(WebSocketTestClient client, long timeoutSeconds, String context) throws InterruptedException {
         String message = client.awaitMessage(timeoutSeconds);
-        Assert.assertNotNull(message, "[" + context + "] Did not receive a message within " + timeoutSeconds + "s timeout");
+        Assert.assertNotNull(message, "[" + context + "] Did not receive a message within " + timeoutSeconds + TIMEOUT_SUFFIX);
         return message;
     }
 
     public static byte[] assertBinaryMessageReceived(WebSocketTestClient client, long timeoutSeconds) throws InterruptedException {
         byte[] message = client.awaitBinaryMessage(timeoutSeconds);
-        Assert.assertNotNull(message, "Did not receive a binary message within " + timeoutSeconds + "s timeout");
+        Assert.assertNotNull(message, "Did not receive a binary message within " + timeoutSeconds + TIMEOUT_SUFFIX);
         return message;
     }
 
     public static void assertNoMessageReceived(WebSocketTestClient client, long timeoutSeconds) throws InterruptedException {
         String message = client.awaitMessage(timeoutSeconds);
-        Assert.assertNull(message, "Expected no message within " + timeoutSeconds + "s timeout, but received: " + message);
+        Assert.assertNull(message, "Expected no message within " + timeoutSeconds + TIMEOUT_SUFFIX + ", but received: " + message);
     }
 
     public static void assertPayloadEquals(String actual, String expected) {
@@ -60,7 +62,7 @@ public final class WebSocketAssertions {
 
     public static void assertClosed(WebSocketTestClient client, long timeoutSeconds) throws InterruptedException {
         boolean closed = client.awaitClosed(timeoutSeconds);
-        Assert.assertTrue(closed, "Expected the connection to reach a closed state within " + timeoutSeconds + "s timeout");
+        Assert.assertTrue(closed, "Expected the connection to reach a closed state within " + timeoutSeconds + TIMEOUT_SUFFIX);
     }
 
     public static void assertClosedWithCode(WebSocketTestClient client, long timeoutSeconds, int expectedCloseCode) throws InterruptedException {
@@ -69,12 +71,6 @@ public final class WebSocketAssertions {
                 "Expected close code " + expectedCloseCode + " but got " + client.getLastCloseCode());
     }
 
-    /**
-     * Parses {@code rawMessage} as a {@link WsMessage} and asserts its
-     * {@code type}/{@code payload} match {@code expected}, failing with a
-     * descriptive message (rather than throwing a checked exception) if
-     * {@code rawMessage} is not valid JSON.
-     */
     public static void assertJsonMessageEquals(String rawMessage, WsMessage expected) {
         WsMessage actual;
         try {

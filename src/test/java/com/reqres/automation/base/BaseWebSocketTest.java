@@ -16,17 +16,9 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Starts a local embedded WebSocket echo server once per test class
- * (avoids depending on a third-party public echo service's uptime), then
- * opens one thread-local client connection per test method. The embedded
- * echo server itself is also {@code ThreadLocal}-scoped (not a plain
- * {@code static} field), matching the pattern used by every sibling base
- * class ({@code BaseRestTest}, {@code BaseGraphQLTest},
- * {@code BaseWebhookTest}) so that two WebSocket test classes running in
- * parallel (see {@code testng.xml}'s {@code parallel="classes"}) never race
- * on each other's server instance/port.
- */
+// starts a local embedded echo server per test class (no dependency on a third-party echo service's
+// uptime), and a thread-local client connection per method. Server is thread-local too, like the other
+// base classes, so parallel="classes" runs don't race on each other's port.
 public abstract class BaseWebSocketTest {
 
     private static final ThreadLocal<EchoServer> ECHO_SERVER = new ThreadLocal<>();

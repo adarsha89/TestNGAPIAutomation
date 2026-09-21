@@ -8,7 +8,6 @@ import com.reqres.automation.testdata.GraphQLPayloadBuilder;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -27,29 +26,21 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldListCountriesWithCodeAndName() {
         GraphQLRequest request = GraphQLPayloadBuilder.forCountriesList();
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
         GraphQLAssertions.assertEachArrayElementFieldsNotBlank(response, "countries", "code", "name");
     }
 
-    @DataProvider(name = "knownCountries")
-    public Object[][] knownCountries() {
-        return new Object[][]{
-                {"BR", "Brazil", "Brasília", "BRL"},
-                {"IN", "India", "New Delhi", "INR"},
-                {"JP", "Japan", "Tokyo", "JPY"},
-        };
-    }
-
-    @Test(dataProvider = "knownCountries", groups = {"graphql", "external", "regression"})
+    @Test(dataProvider = "knownCountries", dataProviderClass = CountriesQueryDataProvider.class,
+            groups = {"graphql", "external", "regression"})
     @Description("Look up a known country by its ISO code and assert its real-world name/capital/currency")
     public void shouldReturnKnownCountryByValidCode(String code, String expectedName, String expectedCapital,
                                                       String expectedCurrency) {
         GraphQLRequest request = GraphQLPayloadBuilder.forCountryByCode(code);
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
@@ -63,7 +54,7 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldReturnNullDataForUnknownCountryCode() {
         GraphQLRequest request = GraphQLPayloadBuilder.forCountryByCode("ZZ");
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
@@ -75,7 +66,7 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldListContinentsWithCodeAndName() {
         GraphQLRequest request = GraphQLPayloadBuilder.forContinentsList();
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
@@ -87,7 +78,7 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldReturnGraphQLErrorForNonExistentField() {
         GraphQLRequest request = GraphQLPayloadBuilder.forInvalidFieldQuery();
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertErrorMessageContains(response, "nonExistentField");
@@ -98,21 +89,14 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldReturnGraphQLErrorForSyntacticallyMalformedQuery() {
         GraphQLRequest request = GraphQLPayloadBuilder.forMalformedSyntaxQuery();
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 400);
         GraphQLAssertions.assertHasErrors(response);
     }
 
-    @DataProvider(name = "countryContinentPairs")
-    public Object[][] countryContinentPairs() {
-        return new Object[][]{
-                {"BR", "SA", "South America", "pt", "Portuguese"},
-                {"JP", "AS", "Asia", "ja", "Japanese"},
-        };
-    }
-
-    @Test(dataProvider = "countryContinentPairs", groups = {"graphql", "external", "regression"})
+    @Test(dataProvider = "countryContinentPairs", dataProviderClass = CountriesQueryDataProvider.class,
+            groups = {"graphql", "external", "regression"})
     @Description("Retrieve a country's nested continent/languages and the continent's country list in one "
             + "aliased query, cross-checked for internal consistency against the same response")
     public void shouldReturnNestedContinentAndLanguagesConsistently(String countryCode, String continentCode,
@@ -121,7 +105,7 @@ public class CountriesQueryTests extends BaseGraphQLTest {
                                                                       String expectedLanguageName) {
         GraphQLRequest request = GraphQLPayloadBuilder.forCountryContinentConsistencyQuery(countryCode, continentCode);
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);
@@ -140,7 +124,7 @@ public class CountriesQueryTests extends BaseGraphQLTest {
     public void shouldExposeExpectedFieldsPerLiveSchemaIntrospection() {
         GraphQLRequest request = GraphQLPayloadBuilder.forCountryTypeIntrospection();
 
-        Response response = client().postQuery(request);
+        Response response = graphQLClient().postQuery(request);
 
         ResponseAssertions.assertStatusCode(response, 200);
         GraphQLAssertions.assertNoErrors(response);

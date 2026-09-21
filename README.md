@@ -35,10 +35,11 @@ src/main/java/com/reqres/automation/
     webhook/    WebhookReceiver                     — embeds WireMock; exposes
                 stubIncomingCallResponse(...) so test classes never drive WireMock's
                 stubbing DSL directly
-  models/       rest/graphql/websocket request & response POJOs
+  models/       rest/graphql/websocket entity/request/response POJOs
   testdata/     UserDataBuilder, GraphQLPayloadBuilder
-  assertions/   ResponseAssertions, SchemaAssertions, GraphQLAssertions,
-                WebSocketAssertions, WebhookAssertions               — every protocol's
+  assertions/   ResponseAssertions (incl. assertBodyValueAbsent), SchemaAssertions,
+                GraphQLAssertions, WebSocketAssertions, WebhookAssertions (incl.
+                assertCallReceivedWithDifferentPayload, assertCallReceivedExactly) — every protocol's
                 test code (REST, GraphQL, WebSocket, webhook) calls into these rather
                 than writing inline response parsing, field navigation, or direct
                 TestNG Assert/WireMock-verify calls
@@ -46,11 +47,15 @@ src/main/java/com/reqres/automation/
 
 src/test/java/com/reqres/automation/
   base/         Base*Test — thread-local client per test class (parallel-safe)
+  dataproviders/  UserApiNegativeDataProvider, WebhookReceiptNegativeDataProvider —
+                dedicated location for negative-scenario @DataProvider test data,
+                kept separate from the test classes they feed
   rest/ graphql/ websocket/ webhook/  — test classes
 
 src/test/resources/
   config/       common.properties + qa/staging/prod.properties
   schemas/      JSON schemas used by SchemaAssertions
+  suites/       testng.xml — TestNG suite definition (moved from repo root)
 
 infra/          docker-compose.yml — local SonarQube, Grafana, Elasticsearch, Jenkins
 .github/workflows/api-tests.yml    — CI: PR → smoke, schedule/dispatch → regression
@@ -73,12 +78,12 @@ directly — if a helper doesn't yet exist for something a test needs, the gap g
 ## Running tests
 
 ```bash
-./mvnw test                    # runs the full suite (testng.xml)
+./mvnw test                    # runs the full suite (src/test/resources/suites/testng.xml)
 ./mvnw test -Dgroups=smoke     # smoke-tagged tests only
 ./mvnw test -Dgroups=regression
 ```
 
-Tests run in parallel — `testng.xml` uses `parallel="classes" thread-count="4"`.
+Tests run in parallel — `src/test/resources/suites/testng.xml` uses `parallel="classes" thread-count="4"`.
 
 ### Environments
 

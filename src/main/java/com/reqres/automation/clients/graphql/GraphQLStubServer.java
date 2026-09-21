@@ -4,13 +4,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
-/**
- * Embedded WireMock lifecycle wrapper simulating a local GraphQL endpoint.
- * Binds to an OS-assigned port by default (parallel-safe). Plays the role of
- * the simulated *target* system a {@link GraphQLClient} posts to, not a
- * client tests call through directly - same conceptual role as
- * {@code WebhookReceiver}, so it is not routed through {@code ClientFactory}.
- */
+// embedded WireMock server simulating a local GraphQL endpoint, binds to an OS-assigned port.
+// This is the target GraphQLClient posts to, not a client itself, so it skips ClientFactory -
+// same role as WebhookReceiver.
 public class GraphQLStubServer {
 
     private WireMockServer server;

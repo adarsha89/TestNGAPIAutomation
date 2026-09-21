@@ -1,7 +1,7 @@
 package com.reqres.automation.clients;
 
 import com.reqres.automation.config.EnvConfig;
-import com.reqres.automation.util.LogMasker;
+import com.reqres.automation.utils.LogMasker;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -14,12 +14,13 @@ import io.restassured.config.RestAssuredConfig;
  *       {@link EnvConfig#getRequestTimeoutMs()}) as both the HTTP connection
  *       and socket timeout, so a hung/slow call has a framework-enforced
  *       upper bound instead of relying on an unbounded default;</li>
- *   <li>blacklists {@link LogMasker#sensitiveHeaderNames()} via RestAssured's
- *       own {@link LogConfig#blacklistHeaders}, which {@code AllureRestAssured}
- *       reads when building its request/response attachment - this is what
- *       keeps secrets (e.g. {@code x-api-key}) out of the Allure report,
- *       consistent with what {@link LogMasker} already redacts from the
- *       SLF4J log line.</li>
+ *   <li>blacklists {@link EnvConfig#getSensitiveDataNames()} via RestAssured's
+ *       own {@link LogConfig#blacklistHeaders} - this is not the primary
+ *       masking mechanism (that is {@link LogMasker.MaskingLoggingFilter},
+ *       which builds and attaches its own masked request/response records
+ *       directly to the Allure report), it is kept only as harmless
+ *       defense-in-depth for any future direct RestAssured {@code .log()}
+ *       usage.</li>
  * </ul>
  * Used by every {@code clients/*} implementation instead of each one
  * re-deriving this config independently.
@@ -35,6 +36,6 @@ public final class RestAssuredConfigFactory {
                 .httpClient(HttpClientConfig.httpClientConfig()
                         .setParam("http.connection.timeout", timeoutMs)
                         .setParam("http.socket.timeout", timeoutMs))
-                .logConfig(LogConfig.logConfig().blacklistHeaders(LogMasker.sensitiveHeaderNames()));
+                .logConfig(LogConfig.logConfig().blacklistHeaders(config.getSensitiveDataNames()));
     }
 }

@@ -9,11 +9,19 @@
     <test name="AllApiTests">
         <classes>
             <class name="com.reqres.automation.rest.UserApiTests"/>
+            <class name="com.reqres.automation.rest.RequestResponseMaskingTests"/>
+            <class name="com.reqres.automation.config.EnvConfigSensitiveDataTests"/>
             <class name="com.reqres.automation.graphql.UserQueryTests"/>
             <class name="com.reqres.automation.graphql.CountriesQueryTests"/>
             <class name="com.reqres.automation.websocket.EchoWebSocketTests"/>
             <class name="com.reqres.automation.websocket.PublicEchoWebSocketTests"/>
             <class name="com.reqres.automation.webhook.WebhookReceiptTests"/>
+        </classes>
+    </test>
+
+    <test name="ContractTests">
+        <classes>
+            <class name="com.reqres.automation.rest.UserSchemaContractTests"/>
         </classes>
     </test>
 

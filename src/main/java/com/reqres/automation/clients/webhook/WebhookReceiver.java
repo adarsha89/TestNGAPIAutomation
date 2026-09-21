@@ -9,12 +9,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-/**
- * Embedded WireMock lifecycle wrapper acting as a local inbound-webhook
- * receiver. Binds to an OS-assigned port by default (parallel-safe), and
- * exposes its base URL plus the underlying server so a test can stub the
- * expected call and later verify what was recorded.
- */
+// embedded WireMock server acting as a local inbound-webhook receiver, binds to an OS-assigned
+// port by default so it's parallel-safe
 public class WebhookReceiver implements ApiClient {
 
     private WireMockServer server;
@@ -33,15 +29,7 @@ public class WebhookReceiver implements ApiClient {
         return server;
     }
 
-    /**
-     * Plays the role of the external caller invoking this receiver's
-     * webhook endpoint - the client-layer wrapper tests must go through
-     * instead of building a raw {@code RestAssured.given()} call inline,
-     * consistent with every other protocol client in this framework.
-     *
-     * @param path        the webhook path being invoked (e.g. {@code /webhook/order-created})
-     * @param jsonBody    the raw JSON payload the external caller sends
-     */
+    // stands in for the external caller hitting this receiver's webhook endpoint
     public Response sendCallerRequest(String path, String jsonBody) {
         return RestAssured.given()
                 .baseUri(baseUrl())
@@ -51,18 +39,15 @@ public class WebhookReceiver implements ApiClient {
                 .post(path);
     }
 
-    /**
-     * Configures this receiver to respond to POSTs at {@code path} with the
-     * given status and JSON body - the wrapper test classes must go through
-     * instead of driving WireMock's stubbing DSL directly.
-     *
-     * @param path              the webhook path to stub (e.g. {@code /webhook/order-created})
-     * @param status            the HTTP status code the stub responds with
-     * @param responseJsonBody  the raw JSON response body the stub returns
-     */
     public void stubIncomingCallResponse(String path, int status, String responseJsonBody) {
         server.stubFor(WireMock.post(WireMock.urlEqualTo(path))
                 .willReturn(WireMock.aResponse().withStatus(status).withBody(responseJsonBody)));
+    }
+
+    // server is shared for the whole test class, so call this first if a test needs
+    // to see only its own traffic
+    public void reset() {
+        server.resetRequests();
     }
 
     @Override

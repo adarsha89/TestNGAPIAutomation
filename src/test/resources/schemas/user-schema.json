@@ -2,10 +2,15 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Reqres single user response",
   "type": "object",
+  "additionalProperties": false,
   "required": ["data", "support"],
   "properties": {
+    "_meta": {
+      "type": "object"
+    },
     "data": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["id", "email", "first_name", "last_name", "avatar"],
       "properties": {
         "id": { "type": "integer" },
@@ -17,6 +22,7 @@
     },
     "support": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["url", "text"],
       "properties": {
         "url": { "type": "string" },

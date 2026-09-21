@@ -4,19 +4,11 @@ import com.reqres.automation.assertions.WebSocketAssertions;
 import com.reqres.automation.base.BasePublicWebSocketTest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.nio.charset.StandardCharsets;
 
-/**
- * Coverage against the real, public {@code wss://echo.websocket.org} server
- * (config-driven via {@code websocket.base.url} - see
- * {@link BasePublicWebSocketTest}). On connect, the server pushes one
- * unsolicited greeting message; {@link BasePublicWebSocketTest} drains it
- * into {@link #connectionGreeting()} so these tests never have to
- * special-case it.
- */
+// coverage against the real public wss://echo.websocket.org server (websocket.base.url)
 @Story("Public WebSocket echo")
 public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
 
@@ -29,16 +21,8 @@ public class PublicEchoWebSocketTests extends BasePublicWebSocketTest {
         WebSocketAssertions.assertNonBlankTextMessage(greeting, "an unsolicited greeting message to have been drained on connect");
     }
 
-    @DataProvider(name = "textPayloads")
-    public Object[][] textPayloads() {
-        return new Object[][]{
-                {"empty", ""},
-                {"short", "hello-from-automation"},
-                {"large", "x".repeat(50_000)},
-        };
-    }
-
-    @Test(dataProvider = "textPayloads", groups = {"websocket", "external", "regression"})
+    @Test(dataProvider = "textPayloads", dataProviderClass = PublicEchoWebSocketDataProvider.class,
+            groups = {"websocket", "external", "regression"})
     @Description("A sent text payload is echoed back exactly, across representative sizes (empty/short/large)")
     public void shouldEchoTextPayloadAcrossSizes(String caseName, String payload) throws InterruptedException {
         client().send(payload);
