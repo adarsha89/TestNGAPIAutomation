@@ -1,7 +1,7 @@
 package com.reqres.automation.assertions;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.reqres.automation.clients.webhook.WebhookReceiver;
+import com.reqres.automation.services.WebhookService;
 
 /**
  * Webhook-shape-aware assertion helpers shared across webhook test classes:
@@ -13,18 +13,18 @@ public final class WebhookAssertions {
     private WebhookAssertions() {
     }
 
-    public static void assertCallReceived(WebhookReceiver receiver, String path, String expectedJsonPayload) {
+    public static void assertCallReceived(WebhookService receiver, String path, String expectedJsonPayload) {
         receiver.getServer().verify(WireMock.postRequestedFor(WireMock.urlEqualTo(path))
                 .withRequestBody(WireMock.equalToJson(expectedJsonPayload)));
     }
 
-    public static void assertNoCallReceived(WebhookReceiver receiver, String path) {
+    public static void assertNoCallReceived(WebhookService receiver, String path) {
         receiver.getServer().verify(0, WireMock.postRequestedFor(WireMock.urlEqualTo(path)));
     }
 
     // path got at least one call, but none matched expectedOriginalPayload - distinguishes a
     // payload mismatch from a path miss (see assertNoCallReceived)
-    public static void assertCallReceivedWithDifferentPayload(WebhookReceiver receiver, String path,
+    public static void assertCallReceivedWithDifferentPayload(WebhookService receiver, String path,
             String expectedOriginalPayload) {
         receiver.getServer().verify(WireMock.moreThanOrExactly(1),
                 WireMock.postRequestedFor(WireMock.urlEqualTo(path)));
@@ -34,7 +34,7 @@ public final class WebhookAssertions {
 
     // exact-count check, stronger than assertCallReceived's implicit "at least one" - catches
     // traffic misattributed from another path (e.g. prefix or case-insensitive match bug)
-    public static void assertCallReceivedExactly(WebhookReceiver receiver, String path,
+    public static void assertCallReceivedExactly(WebhookService receiver, String path,
             String expectedJsonPayload, int expectedCount) {
         receiver.getServer().verify(expectedCount, WireMock.postRequestedFor(WireMock.urlEqualTo(path))
                 .withRequestBody(WireMock.equalToJson(expectedJsonPayload)));

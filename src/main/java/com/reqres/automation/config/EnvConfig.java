@@ -31,14 +31,6 @@ public final class EnvConfig {
         return requireProperty(Constants.REST_BASE_URL_PROPERTY);
     }
 
-    public String getGraphQLBaseUrl() {
-        return requireProperty(Constants.GRAPHQL_BASE_URL_PROPERTY);
-    }
-
-    public String getWebSocketBaseUrl() {
-        return requireProperty(Constants.WEBSOCKET_BASE_URL_PROPERTY);
-    }
-
     public int getWebhookPort() {
         return Integer.parseInt(properties.getProperty(
                 Constants.WEBHOOK_PORT_PROPERTY,
@@ -69,6 +61,24 @@ public final class EnvConfig {
                 .filter(name -> !name.isEmpty())
                 .map(name -> name.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    public int getAuthTokenCacheMaxSize() {
+        return Integer.parseInt(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_MAX_SIZE_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_MAX_SIZE)));
+    }
+
+    public long getAuthTokenCacheMaxTtlMs() {
+        return Long.parseLong(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_MAX_TTL_MS_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_MAX_TTL_MS)));
+    }
+
+    public long getAuthTokenCacheSafetyMarginSeconds() {
+        return Long.parseLong(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_SAFETY_MARGIN_SECONDS_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_SAFETY_MARGIN_SECONDS)));
     }
 
     public String getProperty(String key) {

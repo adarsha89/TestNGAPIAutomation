@@ -108,7 +108,7 @@ public final class LogMasker {
                             + "\nCorrelation-Id: " + correlationId
                             + "\nHeaders: " + headerSummary
                             + "\nQuery Params: " + queryParamSummary.toString().trim()
-                            + "\nBody: " + requestSpec.getBody());
+                            + "\nBody: " + buildBodySummary(requestSpec));
 
             Response response = ctx.next(requestSpec, responseSpec);
 
@@ -129,6 +129,26 @@ public final class LogMasker {
                             + "\nBody: " + response.getBody().asString());
 
             return response;
+        }
+
+        // form-urlencoded bodies (e.g. TokenEndpointClient's client_secret/refresh_token
+        // fields) are masked per-field; other body types fall back to the raw body as before
+        private String buildBodySummary(FilterableRequestSpecification requestSpec) {
+            Map<String, ?> formParams = requestSpec.getFormParams();
+            if (formParams == null || formParams.isEmpty()) {
+                return String.valueOf((Object) requestSpec.getBody());
+            }
+            StringBuilder maskedBody = new StringBuilder();
+            for (Map.Entry<String, ?> formParam : formParams.entrySet()) {
+                if (maskedBody.length() > 0) {
+                    maskedBody.append('&');
+                }
+                Object formParamValue = formParam.getValue();
+                maskedBody.append(formParam.getKey())
+                        .append('=')
+                        .append(maskValue(formParam.getKey(), String.valueOf(formParamValue), sensitiveNames));
+            }
+            return maskedBody.toString();
         }
 
         private String buildHeaderSummary(Iterable<Header> headers) {

@@ -4,7 +4,7 @@ import com.reqres.automation.config.EnvConfig;
 
 /**
  * Common lifecycle contract implemented by every protocol client
- * (rest/graphql/websocket/webhook). Protocol-specific request methods
+ * (rest/webhook). Protocol-specific request methods
  * live on each concrete implementation - this interface only standardizes
  * how a client is initialized/torn down so {@link ClientFactory} can build
  * any of them uniformly.

@@ -1,9 +1,7 @@
 package com.reqres.automation.clients;
 
-import com.reqres.automation.clients.graphql.GraphQLClient;
 import com.reqres.automation.clients.rest.UserRestClient;
 import com.reqres.automation.clients.webhook.WebhookReceiver;
-import com.reqres.automation.clients.websocket.WebSocketTestClient;
 import com.reqres.automation.config.EnvConfig;
 
 /**
@@ -16,8 +14,6 @@ public final class ClientFactory {
 
     public enum Protocol {
         REST,
-        GRAPHQL,
-        WEBSOCKET,
         WEBHOOK
     }
 
@@ -34,10 +30,6 @@ public final class ClientFactory {
         switch (protocol) {
             case REST:
                 return new UserRestClient();
-            case GRAPHQL:
-                return new GraphQLClient();
-            case WEBSOCKET:
-                return new WebSocketTestClient();
             case WEBHOOK:
                 return new WebhookReceiver();
             default:

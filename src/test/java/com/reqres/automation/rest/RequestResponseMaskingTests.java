@@ -1,12 +1,11 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.assertions.ResponseAssertions;
 import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.testdata.ResponseExpectation;
 import com.reqres.automation.utils.Constants;
 import com.reqres.automation.utils.LogMasker;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
-import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -50,10 +49,8 @@ public class RequestResponseMaskingTests extends BaseRestTest {
         extraQueryParams.put(SENSITIVE_QUERY_PARAM_NAME, SENSITIVE_QUERY_PARAM_VALUE);
         extraQueryParams.put(NON_SENSITIVE_QUERY_PARAM_NAME, NON_SENSITIVE_QUERY_PARAM_VALUE);
 
-        Response response = restClient().getUserByIdWithExtraParams(2, extraHeaders, extraQueryParams);
-
-        ResponseAssertions.assertStatusCode(response, 200);
-        ResponseAssertions.assertBodyValueEquals(response, "data.id", 2);
+        restService().getUserByIdWithExtraParamsAndVerify(2, extraHeaders, extraQueryParams,
+                ResponseExpectation.status(200).andBodyValueEquals("data.id", 2));
 
         String correlationId = LogMasker.MaskingLoggingFilter.lastCorrelationId();
         Assert.assertNotNull(correlationId,

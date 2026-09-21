@@ -1,0 +1,9 @@
+{
+  "UserApiTests": ["rest", "users"],
+  "RequestResponseMaskingTests": ["rest", "users", "masking"],
+  "EnvConfigSensitiveDataTests": ["config", "masking"],
+  "AuthStrategyTests": ["rest", "auth", "users"],
+  "RateLimitTests": ["rest", "rate-limit", "users"],
+  "Fallback503Tests": ["rest", "fallback", "users"],
+  "WebhookReceiptTests": ["webhook"]
+}

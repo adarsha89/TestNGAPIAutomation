@@ -2,7 +2,8 @@ package com.reqres.automation.dataproviders;
 
 import org.testng.annotations.DataProvider;
 
-// negative-path rows for UserApiTests; static since TestNG pulls these via dataProviderClass
+// Fixed negative-path edge sets for UserApiTests - hardcoded rather than CSV-backed since these
+// are textbook fixed edge/negative cases, not data that's expected to grow or vary by environment
 public final class UserApiNegativeDataProvider {
 
     private UserApiNegativeDataProvider() {
@@ -21,7 +22,6 @@ public final class UserApiNegativeDataProvider {
     @DataProvider(name = "incompleteCreateUserPayloads")
     public static Object[][] incompleteCreateUserPayloads() {
         return new Object[][]{
-                // caseName, rawJsonBody, nameExpectedPresent, expectedNameValue, jobExpectedPresent, expectedJobValue
                 {"missing name", "{\"job\":\"engineer\"}", false, null, true, "engineer"},
                 {"missing job", "{\"name\":\"morpheus\"}", true, "morpheus", false, null},
                 {"blank name", "{\"name\":\"\",\"job\":\"engineer\"}", true, "", true, "engineer"},

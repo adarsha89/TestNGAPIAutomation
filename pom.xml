@@ -12,7 +12,7 @@
     <name>Reqres API Automation Framework</name>
     <description>
         TestNG + RestAssured based API test automation framework covering
-        REST, GraphQL, WebSocket and Webhook protocols.
+        REST and Webhook protocols.
     </description>
 
     <properties>
@@ -28,9 +28,9 @@
         <jackson.version>2.17.1</jackson.version>
         <slf4j.version>2.0.13</slf4j.version>
         <logback.version>1.5.6</logback.version>
-        <java-websocket.version>1.5.6</java-websocket.version>
         <wiremock.version>2.35.2</wiremock.version>
         <lombok.version>1.18.38</lombok.version>
+        <picocli.version>4.7.6</picocli.version>
     </properties>
 
     <dependencyManagement>
@@ -46,7 +46,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- HTTP layer: REST + GraphQL (POST wrapper) -->
+        <!-- HTTP layer: REST -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -94,14 +94,7 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- WebSocket client + local embedded echo server for the sample test -->
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>${java-websocket.version}</version>
-        </dependency>
-
-        <!-- Embedded webhook receiver / local GraphQL stub target -->
+        <!-- Embedded webhook receiver / local REST stub target -->
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
@@ -114,6 +107,13 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- On-demand CLI tasks (impact-analysis, flaky-report) -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>${picocli.version}</version>
         </dependency>
     </dependencies>
 
@@ -151,6 +151,29 @@
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>2.12.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-test-classpath-file</id>
+                        <phase>generate-test-resources</phase>
+                        <goals><goal>build-classpath</goal></goals>
+                        <configuration>
+                            <outputFile>${project.build.directory}/test-classpath.txt</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <mainClass>com.reqres.automation.cli.CliMain</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,11 +1,9 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.assertions.ResponseAssertions;
-import com.reqres.automation.assertions.SchemaAssertions;
 import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.testdata.ResponseExpectation;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
-import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 /**
@@ -20,8 +18,7 @@ public class UserSchemaContractTests extends BaseRestTest {
     @Test(groups = {"rest", "contract"})
     @Description("GET a known user by id and validate the response against the tightened JSON schema contract")
     public void shouldMatchUserResponseSchemaContract() {
-        Response response = restClient().getUserById(2);
-        ResponseAssertions.assertStatusCode(response, 200);
-        SchemaAssertions.assertMatchesSchema(response, "schemas/user-schema.json");
+        restService().getUserByIdAndVerify(2,
+                ResponseExpectation.status(200).withSchema("schemas/user-schema.json"));
     }
 }

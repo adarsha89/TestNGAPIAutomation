@@ -7,7 +7,7 @@ import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
 
 /**
- * Builds the shared {@link RestAssuredConfig} applied to every REST/GraphQL
+ * Builds the shared {@link RestAssuredConfig} applied to every REST
  * client's {@code RequestSpecification}:
  * <ul>
  *   <li>enforces the configured {@code request.timeout.ms} (see
@@ -15,12 +15,10 @@ import io.restassured.config.RestAssuredConfig;
  *       and socket timeout, so a hung/slow call has a framework-enforced
  *       upper bound instead of relying on an unbounded default;</li>
  *   <li>blacklists {@link EnvConfig#getSensitiveDataNames()} via RestAssured's
- *       own {@link LogConfig#blacklistHeaders} - this is not the primary
- *       masking mechanism (that is {@link LogMasker.MaskingLoggingFilter},
- *       which builds and attaches its own masked request/response records
- *       directly to the Allure report), it is kept only as harmless
- *       defense-in-depth for any future direct RestAssured {@code .log()}
- *       usage.</li>
+ *       own {@link LogConfig#blacklistHeaders}, as a backstop for any direct
+ *       RestAssured {@code .log()} call - actual masking happens in
+ *       {@link LogMasker.MaskingLoggingFilter}, which attaches masked
+ *       request/response records to the Allure report.</li>
  * </ul>
  * Used by every {@code clients/*} implementation instead of each one
  * re-deriving this config independently.

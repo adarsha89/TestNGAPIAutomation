@@ -17,6 +17,8 @@ failsafe-reports/
 allure-results/
 allure-report/
 extent-reports/
+# Generated per-run flaky-detection history - directory itself tracked via .gitkeep
+src/test/resources/data/previousTestResults/run-*.json
 # Local Allure CLI binary cache downloaded by the allure-maven plugin
 .allure/
 
@@ -60,3 +62,4 @@ APIKey.txt
 .claude/settings.local.json
 .claude
 docs
+CLAUDE.md

@@ -1,8 +1,8 @@
 package com.reqres.automation.base;
 
-import com.reqres.automation.clients.ClientFactory;
 import com.reqres.automation.clients.webhook.WebhookReceiver;
-import com.reqres.automation.config.ConfigLoader;
+import com.reqres.automation.helpers.ClientLifecycleHelper;
+import com.reqres.automation.services.WebhookService;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -14,25 +14,24 @@ import org.testng.annotations.BeforeClass;
  */
 public abstract class BaseWebhookTest {
 
-    private static final ThreadLocal<WebhookReceiver> RECEIVER = new ThreadLocal<>();
+    private static final ThreadLocal<WebhookService> SERVICE = new ThreadLocal<>();
 
     @BeforeClass(alwaysRun = true)
     public void startWebhookReceiver() {
-        WebhookReceiver receiver =
-                (WebhookReceiver) ClientFactory.create(ClientFactory.Protocol.WEBHOOK, ConfigLoader.load());
-        RECEIVER.set(receiver);
+        WebhookReceiver receiver = ClientLifecycleHelper.createWebhookReceiver();
+        SERVICE.set(new WebhookService(receiver));
     }
 
     @AfterClass(alwaysRun = true)
     public void stopWebhookReceiver() {
-        WebhookReceiver receiver = RECEIVER.get();
-        if (receiver != null) {
-            receiver.close();
+        WebhookService service = SERVICE.get();
+        if (service != null) {
+            service.close();
         }
-        RECEIVER.remove();
+        SERVICE.remove();
     }
 
-    protected WebhookReceiver receiver() {
-        return RECEIVER.get();
+    protected WebhookService webhookService() {
+        return SERVICE.get();
     }
 }

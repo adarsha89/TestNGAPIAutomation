@@ -4,18 +4,38 @@
 
     <listeners>
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="com.reqres.automation.CustomTestNGListener"/>
     </listeners>
 
     <test name="AllApiTests">
         <classes>
             <class name="com.reqres.automation.rest.UserApiTests"/>
+            <class name="com.reqres.automation.rest.UnknownResourceApiTests"/>
+            <class name="com.reqres.automation.rest.AuthenticationApiTests"/>
             <class name="com.reqres.automation.rest.RequestResponseMaskingTests"/>
+            <class name="com.reqres.automation.rest.AuthStrategyTests"/>
+            <class name="com.reqres.automation.rest.OAuth2AccessTokenAuthStrategyTests"/>
+            <class name="com.reqres.automation.rest.OidcIdTokenAuthStrategyTests"/>
+            <class name="com.reqres.automation.rest.JwtBearerAuthStrategyTests"/>
+            <class name="com.reqres.automation.rest.OAuth2RefreshTokenAuthStrategyTests"/>
+            <class name="com.reqres.automation.clients.auth.cache.TokenCacheRegistryTests"/>
+            <class name="com.reqres.automation.utils.JwtClaimsDecoderTests"/>
+            <class name="com.reqres.automation.rest.RateLimitTests"/>
+            <class name="com.reqres.automation.rest.Fallback503Tests"/>
+            <class name="com.reqres.automation.rest.RetryHelperTests"/>
             <class name="com.reqres.automation.config.EnvConfigSensitiveDataTests"/>
-            <class name="com.reqres.automation.graphql.UserQueryTests"/>
-            <class name="com.reqres.automation.graphql.CountriesQueryTests"/>
-            <class name="com.reqres.automation.websocket.EchoWebSocketTests"/>
-            <class name="com.reqres.automation.websocket.PublicEchoWebSocketTests"/>
+            <class name="com.reqres.automation.config.ConfigCachingTests"/>
+            <class name="com.reqres.automation.config.UsersEndpointRateLimitChokePointTests"/>
+            <class name="com.reqres.automation.utils.LruTtlCacheTests"/>
+            <class name="com.reqres.automation.utils.TestImpactAnalyzerTests"/>
+            <class name="com.reqres.automation.utils.RunHistoryStoreTests"/>
+            <class name="com.reqres.automation.TestResultAggregatorIntegrationTests"/>
+            <class name="com.reqres.automation.FlakyTestDetectorTests"/>
+            <class name="com.reqres.automation.NestedRunSandboxClasspathTests"/>
             <class name="com.reqres.automation.webhook.WebhookReceiptTests"/>
+            <class name="com.reqres.automation.cli.CliMainTests"/>
+            <class name="com.reqres.automation.cli.ImpactAnalysisCommandTests"/>
+            <class name="com.reqres.automation.cli.FlakyReportCommandTests"/>
         </classes>
     </test>
 
