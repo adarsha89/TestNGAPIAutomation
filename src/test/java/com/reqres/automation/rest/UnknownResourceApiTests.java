@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.dataproviders.UnknownResourceDataProvider;
 import com.reqres.automation.testdata.ResponseExpectation;
 import io.qameta.allure.Description;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  * same pagination/lookup shape as the user endpoints, no auth required.
  */
 @Story("Reqres unknown/color resource API")
-public class UnknownResourceApiTests extends BaseRestTest {
+public class UnknownResourceApiTests implements BaseRestInterface {
 
     @Test(groups = {"rest", "regression"})
     @Description("GET /unknown lists color resources with consistent pagination fields")

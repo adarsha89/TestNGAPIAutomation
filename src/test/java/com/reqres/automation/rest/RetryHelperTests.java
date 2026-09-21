@@ -2,7 +2,7 @@ package com.reqres.automation.rest;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.clients.rest.RestStubServer;
 import com.reqres.automation.testdata.ResponseExpectation;
 import com.reqres.automation.utils.Constants;
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
  * reqres.in can't be made to fail transiently on demand.
  */
 @Story("Bounded retry on transient (502/503/504) response status")
-public class RetryHelperTests extends BaseRestTest {
+public class RetryHelperTests implements BaseRestInterface {
 
     private static final String STUB_PATH = "/retry-check";
     // Deliberately unconfigured endpoint key (see common.properties) - retry pacing is a no-op here,

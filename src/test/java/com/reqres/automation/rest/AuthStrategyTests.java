@@ -2,7 +2,7 @@ package com.reqres.automation.rest;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.reqres.automation.base.BaseRestInterface;
-import com.reqres.automation.base.BaseWebhookTest;
+import com.reqres.automation.base.BaseWebhookInterface;
 import com.reqres.automation.clients.rest.RestStubServer;
 import com.reqres.automation.config.EnvConfig;
 import com.reqres.automation.helpers.AuthStrategyFactory;
@@ -28,7 +28,7 @@ import java.util.Base64;
  * support those.
  */
 @Story("Per-endpoint-key auth strategy selection")
-public class AuthStrategyTests extends BaseWebhookTest implements BaseRestInterface {
+public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterface {
 
     private static final String BASIC_ENDPOINT_KEY = "webhookFallbackDemo";
     private static final String BEARER_ENDPOINT_KEY = "webhookFallbackDemoBearer";

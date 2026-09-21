@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.clients.rest.RestStubServer;
 import com.reqres.automation.dataproviders.RateLimitDataProvider;
 import com.reqres.automation.testdata.ResponseExpectation;
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
  * pace itself on demand.
  */
 @Story("Per-endpoint-key rate limiting")
-public class RateLimitTests extends BaseRestTest {
+public class RateLimitTests implements BaseRestInterface {
 
     private static final String STUB_PATH = "/rate-limit-check";
     private static final String POST_STUB_PATH = "/rate-limit-post-check";

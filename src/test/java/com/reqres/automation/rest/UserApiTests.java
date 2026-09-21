@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.dataproviders.UserApiDataProvider;
 import com.reqres.automation.dataproviders.UserApiNegativeDataProvider;
 import com.reqres.automation.models.rest.User;
@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
  * (https://reqres.in/api/users).
  */
 @Story("Reqres user API")
-public class UserApiTests extends BaseRestTest {
+public class UserApiTests implements BaseRestInterface {
 
     @Test(groups = {"rest", "smoke", "regression"})
     @Description("GET a known user by id, validate status and a field value")

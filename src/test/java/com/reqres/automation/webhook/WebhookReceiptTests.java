@@ -1,6 +1,6 @@
 package com.reqres.automation.webhook;
 
-import com.reqres.automation.base.BaseWebhookTest;
+import com.reqres.automation.base.BaseWebhookInterface;
 import com.reqres.automation.clients.webhook.WebhookReceiver;
 import com.reqres.automation.dataproviders.WebhookReceiptNegativeDataProvider;
 import com.reqres.automation.services.WebhookService;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
  * inbound-webhook test would follow.
  */
 @Story("Inbound webhook receipt")
-public class WebhookReceiptTests extends BaseWebhookTest {
+public class WebhookReceiptTests implements BaseWebhookInterface {
 
     private static final String WEBHOOK_PATH = "/webhook/order-created";
     private static final String PAYLOAD = "{\"event\":\"order.created\",\"orderId\":\"ORD-1001\"}";

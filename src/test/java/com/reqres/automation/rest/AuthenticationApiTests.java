@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.dataproviders.AuthenticationApiDataProvider;
 import com.reqres.automation.testdata.ResponseExpectation;
 import io.qameta.allure.Description;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  * required, success only for reqres's documented fixture credentials.
  */
 @Story("Reqres login/register API")
-public class AuthenticationApiTests extends BaseRestTest {
+public class AuthenticationApiTests implements BaseRestInterface {
 
     @Test(groups = {"rest", "login", "regression"},
             dataProvider = "loginCases", dataProviderClass = AuthenticationApiDataProvider.class)

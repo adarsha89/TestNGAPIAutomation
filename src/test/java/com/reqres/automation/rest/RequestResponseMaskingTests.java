@@ -1,6 +1,6 @@
 package com.reqres.automation.rest;
 
-import com.reqres.automation.base.BaseRestTest;
+import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.testdata.ResponseExpectation;
 import com.reqres.automation.utils.Constants;
 import com.reqres.automation.utils.LogMasker;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  * (unmasked) values still reach the API.
  */
 @Story("Request/response logging masking")
-public class RequestResponseMaskingTests extends BaseRestTest {
+public class RequestResponseMaskingTests implements BaseRestInterface {
 
     private static final String MASKED_VALUE = "***MASKED***";
     private static final String SENSITIVE_HEADER_NAME = "Authorization";
