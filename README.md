@@ -1,8 +1,12 @@
 # Reqres API Automation Framework
 
-A layered TestNG + RestAssured API test automation framework covering **REST**, **GraphQL**, **WebSocket**,
-and **Webhook** protocols behind one protocol-agnostic client abstraction. Tests describe behaviour; the
-framework owns configuration, request building, masked logging, and reporting.
+A layered TestNG + RestAssured API test automation framework covering **REST** and **Webhook** protocols
+behind one protocol-agnostic client abstraction. Tests describe behaviour; the framework owns
+configuration, request building, masked logging, and reporting.
+
+<p align="center">
+  <img src="./project.svg" alt="API Automation Framework Architecture">
+</p>
 
 An architecture reference (basic + detailed diagrams, component reference, request-lifecycle walkthrough)
 is available for onboarding — ask in Claude Code to regenerate/open it, or see `docs/` for prior
@@ -14,8 +18,7 @@ requirements/plans/reviews produced by the agent pipeline described below.
 |---|---|
 | Language / build | Java 17, Maven |
 | Test execution | TestNG 7.9 |
-| HTTP / REST / GraphQL | RestAssured 5.4 (+ json-schema-validator) |
-| WebSocket | Java-WebSocket 1.5 |
+| HTTP / REST | RestAssured 5.4 (+ json-schema-validator) |
 | Webhook stub | WireMock (JRE8) 2.35 |
 | Reporting | Allure 2.27 (allure-testng, allure-rest-assured) |
 | JSON | Jackson Databind |
@@ -28,29 +31,33 @@ src/main/java/com/reqres/automation/
   config/       ConfigLoader, EnvConfig            — layered env resolution
   clients/      ApiClient, ClientFactory,           — factory/strategy dispatch
                 RequestSpecFactory, RestAssuredConfigFactory
-    rest/       RestClientBase, UserRestClient
-    graphql/    GraphQLClient, GraphQLStubServer     — test classes only stub/configure
-                GraphQL responses through GraphQLStubServer, never WireMock directly
-    websocket/  WebSocketTestClient
+    rest/       RestClientBase, UserRestClient, RestStubServer
     webhook/    WebhookReceiver                     — embeds WireMock; exposes
                 stubIncomingCallResponse(...) so test classes never drive WireMock's
                 stubbing DSL directly
-  models/       rest/graphql/websocket request & response POJOs
-  testdata/     UserDataBuilder, GraphQLPayloadBuilder
-  assertions/   ResponseAssertions, SchemaAssertions, GraphQLAssertions,
-                WebSocketAssertions, WebhookAssertions               — every protocol's
-                test code (REST, GraphQL, WebSocket, webhook) calls into these rather
-                than writing inline response parsing, field navigation, or direct
-                TestNG Assert/WireMock-verify calls
+  models/       rest entity/request/response POJOs
+  assertions/   ResponseAssertions (incl. assertBodyValueAbsent), SchemaAssertions,
+                WebhookAssertions (incl. assertCallReceivedWithDifferentPayload,
+                assertCallReceivedExactly) — every protocol's test code (REST, webhook)
+                calls into these rather than writing inline response parsing, field
+                navigation, or direct TestNG Assert/WireMock-verify calls
   util/         Constants, LogMasker
 
 src/test/java/com/reqres/automation/
   base/         Base*Test — thread-local client per test class (parallel-safe)
-  rest/ graphql/ websocket/ webhook/  — test classes
+  testdata/     UserDataBuilder — synthetic test-payload factory
+  dataproviders/  UserApiNegativeDataProvider, UserApiDataProvider, UnknownResourceDataProvider,
+                AuthenticationApiDataProvider, WebhookReceiptNegativeDataProvider,
+                dataproviders/csv/CsvLazyDataProvider — dedicated location for
+                @DataProvider test data, kept separate from the test classes they feed;
+                CSV-backed providers read lazily from src/test/resources/testdata/*.csv
+  rest/ webhook/  — test classes
 
 src/test/resources/
   config/       common.properties + qa/staging/prod.properties
   schemas/      JSON schemas used by SchemaAssertions
+  suites/       testng.xml — TestNG suite definition (moved from repo root)
+  testdata/     CSV files backing the lazy CSV DataProviders
 
 infra/          docker-compose.yml — local SonarQube, Grafana, Elasticsearch, Jenkins
 .github/workflows/api-tests.yml    — CI: PR → smoke, schedule/dispatch → regression
@@ -58,7 +65,14 @@ infra/          docker-compose.yml — local SonarQube, Grafana, Elasticsearch, 
 
 ### Test-writing convention
 
-Every test class, across all four protocol areas (REST, GraphQL, WebSocket, webhook), only
+`src/main` is reserved for reusable framework/engine code: configuration,
+clients, services, assertion helpers, models, and shared utilities. `src/test`
+contains the executable tests and all test-specific support code, including
+base test classes, fixtures, data providers, test-data builders, suite files,
+schemas, and environment data. Code in `src/main` must not depend on code or
+resources in `src/test`.
+
+Every test class, across both protocol areas (REST, webhook), only
 orchestrates a call into `clients/` and a check into `assertions/`, plus TestNG
 annotations/data providers. A test class never constructs a raw request/connection, never
 drives a mock's stubbing/verification DSL, never parses a raw response, and never asserts
@@ -73,12 +87,12 @@ directly — if a helper doesn't yet exist for something a test needs, the gap g
 ## Running tests
 
 ```bash
-./mvnw test                    # runs the full suite (testng.xml)
+./mvnw test                    # runs the full suite (src/test/resources/suites/testng.xml)
 ./mvnw test -Dgroups=smoke     # smoke-tagged tests only
 ./mvnw test -Dgroups=regression
 ```
 
-Tests run in parallel — `testng.xml` uses `parallel="classes" thread-count="4"`.
+Tests run in parallel — `src/test/resources/suites/testng.xml` uses `parallel="classes" thread-count="4"`.
 
 ### Environments
 

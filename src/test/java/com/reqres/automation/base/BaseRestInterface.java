@@ -1,30 +1,30 @@
 package com.reqres.automation.base;
 
-import com.reqres.automation.clients.ClientFactory;
 import com.reqres.automation.clients.rest.UserRestClient;
-import com.reqres.automation.config.ConfigLoader;
+import com.reqres.automation.helpers.ClientLifecycleHelper;
+import com.reqres.automation.services.RestUserService;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 public interface BaseRestInterface {
-    ThreadLocal<UserRestClient> CLIENT = new ThreadLocal<>();
+    ThreadLocal<RestUserService> SERVICE = new ThreadLocal<>();
 
     @BeforeClass(alwaysRun = true)
     default void setUpRestClient() {
-        UserRestClient client = (UserRestClient) ClientFactory.create(ClientFactory.Protocol.REST, ConfigLoader.load());
-        CLIENT.set(client);
+        UserRestClient client = ClientLifecycleHelper.createRestClient();
+        SERVICE.set(new RestUserService(client));
     }
 
     @AfterClass(alwaysRun = true)
     default void tearDownRestClient() {
-        UserRestClient client = CLIENT.get();
-        if (client != null) {
-            client.close();
+        RestUserService service = SERVICE.get();
+        if (service != null) {
+            service.close();
         }
-        CLIENT.remove();
+        SERVICE.remove();
     }
 
-    default UserRestClient restClient() {
-        return CLIENT.get();
+    default RestUserService restService() {
+        return SERVICE.get();
     }
 }

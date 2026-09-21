@@ -9,7 +9,6 @@
     <logger name="com.reqres.automation" level="INFO"/>
     <logger name="org.eclipse.jetty" level="WARN"/>
     <logger name="com.github.tomakehurst.wiremock" level="WARN"/>
-    <logger name="org.java_websocket" level="WARN"/>
 
     <root level="WARN">
         <appender-ref ref="CONSOLE"/>

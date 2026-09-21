@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1250" viewBox="0 0 1600 1250">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+    <path d="M0,0 L10,5 L0,10 Z" fill="#222"/>
+  </marker>
+  <style>
+    .title{font:700 30px Arial,sans-serif;fill:#111}
+    .head{font:700 25px Arial,sans-serif;fill:#111}
+    .subhead{font:700 19px Arial,sans-serif;fill:#111}
+    .body{font:18px Arial,sans-serif;fill:#111}
+    .small{font:16px Arial,sans-serif;fill:#111}
+    .box{stroke:#222;stroke-width:3}
+    .arrow{stroke:#222;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+  </style>
+</defs>
+
+<rect width="1600" height="1250" fill="white"/>
+<text x="30" y="45" class="title">Maven + TestNG + RestAssured</text>
+
+<!-- Utils -->
+<rect x="25" y="120" width="350" height="690" rx="25" fill="#fff0b8" class="box"/>
+<text x="200" y="165" text-anchor="middle" class="head">Utils</text>
+
+<rect x="45" y="195" width="310" height="88" rx="15" fill="white" class="box"/>
+<text x="200" y="225" text-anchor="middle" class="subhead">Rate Limiting</text>
+<text x="200" y="252" text-anchor="middle" class="small">(throttle API requests)</text>
+
+<rect x="45" y="300" width="310" height="88" rx="15" fill="white" class="box"/>
+<text x="200" y="330" text-anchor="middle" class="subhead">Caching</text>
+<text x="200" y="357" text-anchor="middle" class="small">(in-memory/LRU/TTL)</text>
+
+<rect x="45" y="405" width="310" height="88" rx="15" fill="white" class="box"/>
+<text x="200" y="435" text-anchor="middle" class="subhead">Log Masking</text>
+<text x="200" y="462" text-anchor="middle" class="small">(mask sensitive data)</text>
+
+<rect x="45" y="510" width="310" height="88" rx="15" fill="white" class="box"/>
+<text x="200" y="540" text-anchor="middle" class="subhead">Flaky Test Detection</text>
+<text x="200" y="567" text-anchor="middle" class="small">(detect and retry/mark flaky)</text>
+
+<rect x="45" y="615" width="310" height="88" rx="15" fill="white" class="box"/>
+<text x="200" y="645" text-anchor="middle" class="subhead">Test Impact Analysis</text>
+<text x="200" y="672" text-anchor="middle" class="small">(selective test execution)</text>
+
+<rect x="45" y="720" width="310" height="70" rx="15" fill="white" class="box"/>
+<text x="200" y="749" text-anchor="middle" class="subhead">Common Utilities</text>
+<text x="200" y="774" text-anchor="middle" class="small">(random data, retry, waits, file utils)</text>
+
+<!-- Helpers -->
+<rect x="410" y="90" width="560" height="225" rx="25" fill="#d9f2d9" class="box"/>
+<text x="690" y="130" text-anchor="middle" class="head">Helpers</text>
+
+<rect x="435" y="160" width="235" height="125" rx="15" fill="white" class="box"/>
+<text x="552" y="192" text-anchor="middle" class="subhead">Assertion Helpers</text>
+<text x="552" y="220" text-anchor="middle" class="small">(response validation,</text>
+<text x="552" y="245" text-anchor="middle" class="small">custom assertions)</text>
+
+<rect x="700" y="160" width="235" height="125" rx="15" fill="white" class="box"/>
+<text x="817" y="192" text-anchor="middle" class="subhead">Client Helpers</text>
+<text x="817" y="220" text-anchor="middle" class="small">(Request/Response</text>
+<text x="817" y="245" text-anchor="middle" class="small">handling, Headers, Logging)</text>
+
+<!-- Shared Config -->
+<rect x="1160" y="55" width="390" height="210" rx="25" fill="#e6d9ff" class="box"/>
+<text x="1355" y="100" text-anchor="middle" class="head">Shared Config</text>
+<text x="1195" y="145" class="body">ConfigLoader → EnvConfig</text>
+<text x="1195" y="180" class="body">Base URLs, API Keys,</text>
+<text x="1195" y="210" class="body">Timeout, Headers,</text>
+<text x="1195" y="240" class="body">Other properties</text>
+
+<!-- Service Layer -->
+<rect x="480" y="370" width="600" height="260" rx="25" fill="#cfe5fa" class="box"/>
+<text x="780" y="415" text-anchor="middle" class="head">Service Layer</text>
+<text x="515" y="460" class="body">Service classes for each target/integration</text>
+<text x="515" y="488" class="small">(e.g., UserService, PaymentService)</text>
+<text x="515" y="535" class="body">Encapsulates API calls using RestAssured</text>
+<text x="515" y="580" class="body">Uses entity models, mappers, error handling</text>
+
+<!-- Target APIs -->
+<ellipse cx="1360" cy="480" rx="190" ry="155" fill="#ffd1d1" stroke="#a22" stroke-width="3"/>
+<text x="1360" y="425" text-anchor="middle" class="head">Target APIs</text>
+<text x="1360" y="470" text-anchor="middle" class="subhead">REST</text>
+<text x="1360" y="515" text-anchor="middle" class="subhead">Webhooks</text>
+<text x="1360" y="545" text-anchor="middle" class="small">(incoming/outgoing)</text>
+
+<!-- Test Layer -->
+<rect x="480" y="700" width="600" height="205" rx="25" fill="#d9f2d9" class="box"/>
+<text x="780" y="745" text-anchor="middle" class="head">Test Layer</text>
+<text x="515" y="790" class="body">Test classes extending BaseTest</text>
+<text x="515" y="825" class="body">Calls service layer methods</text>
+<text x="515" y="860" class="body">Uses Assertion helpers to assert on responses</text>
+
+<!-- Test Data -->
+<rect x="190" y="970" width="450" height="220" rx="25" fill="#cfe5fa" class="box"/>
+<text x="415" y="1015" text-anchor="middle" class="head">Test Data</text>
+<text x="225" y="1060" class="body">DataBuilders</text>
+<text x="225" y="1095" class="body">Test data files (CSV, other formats)</text>
+<text x="225" y="1130" class="body">Test constants</text>
+<text x="225" y="1165" class="body">Environment specific data</text>
+
+<!-- Reporting -->
+<rect x="850" y="970" width="650" height="220" rx="25" fill="#e6d9ff" class="box"/>
+<text x="1175" y="1015" text-anchor="middle" class="head">Test Reporting and Test Listeners</text>
+<text x="885" y="1060" class="body">Allure</text>
+<text x="885" y="1095" class="body">TestNG Listeners</text>
+<text x="885" y="1130" class="body">Custom Listeners (e.g., retry, flaky, logs)</text>
+<text x="885" y="1165" class="body">Report generation and publishing</text>
+
+<!-- Arrows -->
+<path d="M690 315 L690 370" class="arrow"/>
+<text x="710" y="345" class="small">Uses helpers</text>
+
+<path d="M1160 220 L980 370" class="arrow"/>
+<text x="1030" y="285" class="small">Provides configuration</text>
+
+<path d="M375 455 L480 500" class="arrow"/>
+<text x="385" y="435" class="small">Used by service layer</text>
+<text x="385" y="455" class="small">for common utilities</text>
+
+<path d="M1080 500 L1170 500" class="arrow"/>
+<text x="1085" y="455" class="small">Calls external APIs</text>
+<text x="1085" y="478" class="small">(REST / Webhooks)</text>
+<text x="1085" y="520" class="small">using RestAssured</text>
+
+<path d="M780 700 L780 630" class="arrow"/>
+<text x="800" y="665" class="small">Calls service methods</text>
+
+<path d="M415 970 L560 905" class="arrow"/>
+<text x="420" y="940" class="small">Provides test data</text>
+
+<path d="M900 905 L900 970" class="arrow"/>
+<text x="920" y="940" class="small">Generates test results</text>
+<text x="920" y="960" class="small">(triggers listeners)</text>
+</svg>

@@ -1,0 +1,3 @@
+caseName,rawJsonBody,expectedStatus,expectTokenPresent,expectedErrorMessage
+successful registration (fixture creds),"{""email"":""eve.holt@reqres.in"",""password"":""pistol""}",200,true,
+missing password,"{""email"":""sydney@fife""}",400,false,Missing password

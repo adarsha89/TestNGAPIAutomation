@@ -1,11 +1,12 @@
 package com.reqres.automation.config;
 
-import com.reqres.automation.util.Constants;
+import com.reqres.automation.utils.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Resolves the active environment (-Denv=qa|staging|prod, default qa) and
@@ -22,23 +23,35 @@ import java.util.Properties;
  *     never be committed;</li>
  *     <li>an identically-named (by convention) environment variable for
  *     any property - e.g. {@code rest.base.url} is overridden by
- *     {@code REST_BASE_URL}, and {@code api.key} by {@code API_KEY}. This
- *     is how the key that used to live in the untracked {@code APIKey.txt}
- *     at the repo root should be supplied at runtime.</li>
+ *     {@code REST_BASE_URL}, and {@code api.key} by {@code API_KEY}.</li>
  * </ol>
  */
 public final class ConfigLoader {
+
+    // Test-support instrumentation only (same spirit as LogMasker.lastCorrelationId()) - its
+    // only consumer is ConfigCachingTests, verifying a cache hit performs no second classpath
+    // read. Incremented only inside loadResourceInto's actual read path, never on a cache hit.
+    private static final AtomicInteger CLASSPATH_READ_COUNT = new AtomicInteger(0);
 
     private ConfigLoader() {
     }
 
     public static EnvConfig load() {
         String env = System.getProperty(Constants.ENV_SYSTEM_PROPERTY, Constants.DEFAULT_ENV);
+        return ConfigCache.getOrLoad(env, () -> buildFromClasspathAndEnvVars(env));
+    }
 
+    /** Number of times this JVM has actually read a config file off the classpath - unaffected
+     * by cache hits. Test-support only, see {@link #CLASSPATH_READ_COUNT}. */
+    public static int getClasspathReadCount() {
+        return CLASSPATH_READ_COUNT.get();
+    }
+
+    private static EnvConfig buildFromClasspathAndEnvVars(String env) {
         Properties properties = new Properties();
-        loadResourceInto(properties, "config/" + Constants.COMMON_CONFIG_FILE, true);
-        loadResourceInto(properties, "config/" + env + ".properties", true);
-        loadResourceInto(properties, "config/" + env + ".local.properties", false);
+        loadResourceInto(properties, Constants.CONFIG_DIR + Constants.COMMON_CONFIG_FILE, true);
+        loadResourceInto(properties, Constants.CONFIG_DIR + env + ".properties", true);
+        loadResourceInto(properties, Constants.CONFIG_DIR + env + ".local.properties", false);
 
         applyEnvironmentOverrides(properties);
 
@@ -54,6 +67,7 @@ public final class ConfigLoader {
                 return;
             }
             properties.load(in);
+            CLASSPATH_READ_COUNT.incrementAndGet();
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load config file: " + resource, e);
         }

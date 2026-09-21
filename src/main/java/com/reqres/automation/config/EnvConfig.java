@@ -1,8 +1,12 @@
 package com.reqres.automation.config;
 
-import com.reqres.automation.util.Constants;
+import com.reqres.automation.utils.Constants;
 
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Typed accessor over the properties resolved by {@link ConfigLoader} for
@@ -27,26 +31,14 @@ public final class EnvConfig {
         return requireProperty(Constants.REST_BASE_URL_PROPERTY);
     }
 
-    public String getGraphQLBaseUrl() {
-        return requireProperty(Constants.GRAPHQL_BASE_URL_PROPERTY);
-    }
-
-    public String getWebSocketBaseUrl() {
-        return requireProperty(Constants.WEBSOCKET_BASE_URL_PROPERTY);
-    }
-
     public int getWebhookPort() {
         return Integer.parseInt(properties.getProperty(
                 Constants.WEBHOOK_PORT_PROPERTY,
                 String.valueOf(Constants.DEFAULT_WEBHOOK_PORT)));
     }
 
-    /**
-     * Never hardcode/commit a real value for this - it is deliberately
-     * blank in the checked-in *.properties files and must be supplied via
-     * the {@code API_KEY} environment variable or a local, gitignored
-     * {@code <env>.local.properties} override.
-     */
+    // blank in the checked-in *.properties files on purpose - supply via API_KEY env var
+    // or a local, gitignored <env>.local.properties override
     public String getApiKey() {
         return properties.getProperty(Constants.API_KEY_PROPERTY, "");
     }
@@ -55,6 +47,38 @@ public final class EnvConfig {
         return Integer.parseInt(properties.getProperty(
                 Constants.REQUEST_TIMEOUT_PROPERTY,
                 String.valueOf(Constants.DEFAULT_REQUEST_TIMEOUT_MS)));
+    }
+
+    // parses sensitive.data.names (comma-separated, trimmed, lower-cased), falling back to
+    // Constants.SENSITIVE_DATA when absent/blank so masking works with zero config (FR10)
+    public Set<String> getSensitiveDataNames() {
+        String raw = properties.getProperty(Constants.SENSITIVE_DATA_PROPERTY);
+        if (raw == null || raw.isBlank()) {
+            return Constants.SENSITIVE_DATA;
+        }
+        return Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .filter(name -> !name.isEmpty())
+                .map(name -> name.toLowerCase(Locale.ROOT))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    public int getAuthTokenCacheMaxSize() {
+        return Integer.parseInt(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_MAX_SIZE_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_MAX_SIZE)));
+    }
+
+    public long getAuthTokenCacheMaxTtlMs() {
+        return Long.parseLong(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_MAX_TTL_MS_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_MAX_TTL_MS)));
+    }
+
+    public long getAuthTokenCacheSafetyMarginSeconds() {
+        return Long.parseLong(properties.getProperty(
+                Constants.AUTH_TOKEN_CACHE_SAFETY_MARGIN_SECONDS_PROPERTY,
+                String.valueOf(Constants.DEFAULT_AUTH_TOKEN_CACHE_SAFETY_MARGIN_SECONDS)));
     }
 
     public String getProperty(String key) {

@@ -1,10 +1,6 @@
 package com.reqres.automation.base;
 
-import com.reqres.automation.clients.ClientFactory;
 import com.reqres.automation.clients.rest.UserRestClient;
-import com.reqres.automation.config.ConfigLoader;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 /**
  * Builds a thread-local {@link UserRestClient} (and its underlying
