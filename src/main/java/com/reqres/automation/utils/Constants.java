@@ -25,6 +25,7 @@ public final class Constants {
     public static final String WEBHOOK_PORT_PROPERTY = "webhook.port";
     public static final String API_KEY_PROPERTY = "api.key";
     public static final String REQUEST_TIMEOUT_PROPERTY = "request.timeout.ms";
+    public static final String ROW_POOL_CLAIM_TIMEOUT_MS_PROPERTY = "row.pool.claim.timeout.ms";
     public static final String SENSITIVE_DATA_PROPERTY = "sensitive.data.names";
 
     // Headers
@@ -48,6 +49,7 @@ public final class Constants {
 
     // Defaults
     public static final int DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
+    public static final long DEFAULT_ROW_POOL_CLAIM_TIMEOUT_MS = 30_000L;
     public static final int DEFAULT_WEBHOOK_PORT = 0;
 
     // Token cache config (see clients/auth/cache/TokenCacheRegistry)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="ReqresAutomationSuite" parallel="classes" thread-count="10">
+<suite name="ReqresAutomationSuite" parallel="classes" thread-count="10" data-provider-thread-count="8">
 
     <listeners>
         <listener class-name="com.reqres.automation.CustomTestNGListener"/>
@@ -11,6 +11,9 @@
             <class name="com.reqres.automation.rest.UserApiTests"/>
             <class name="com.reqres.automation.rest.UnknownResourceApiTests"/>
             <class name="com.reqres.automation.rest.AuthenticationApiTests"/>
+            <class name="com.reqres.automation.rest.RowLockedSingleRowTests"/>
+            <class name="com.reqres.automation.rest.RowLockedMultiRowTests"/>
+            <class name="com.reqres.automation.rest.RowLockedConcurrencyTests"/>
             <class name="com.reqres.automation.rest.RequestResponseMaskingTests"/>
             <class name="com.reqres.automation.rest.AuthStrategyTests"/>
             <class name="com.reqres.automation.rest.OAuth2AccessTokenAuthStrategyTests"/>

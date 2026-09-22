@@ -49,6 +49,12 @@ public final class EnvConfig {
                 String.valueOf(Constants.DEFAULT_REQUEST_TIMEOUT_MS)));
     }
 
+    public long getRowPoolClaimTimeoutMs() {
+        return Long.parseLong(properties.getProperty(
+                Constants.ROW_POOL_CLAIM_TIMEOUT_MS_PROPERTY,
+                String.valueOf(Constants.DEFAULT_ROW_POOL_CLAIM_TIMEOUT_MS)));
+    }
+
     // parses sensitive.data.names (comma-separated, trimmed, lower-cased), falling back to
     // Constants.SENSITIVE_DATA when absent/blank so masking works with zero config (FR10)
     public Set<String> getSensitiveDataNames() {
