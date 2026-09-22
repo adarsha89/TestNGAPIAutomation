@@ -2,8 +2,10 @@ package com.reqres.automation.rest;
 
 import com.reqres.automation.base.BaseRestInterface;
 import com.reqres.automation.clients.rest.RestStubServer;
+import com.reqres.automation.config.ConfigLoader;
 import com.reqres.automation.dataproviders.RateLimitDataProvider;
 import com.reqres.automation.testdata.ResponseExpectation;
+import com.reqres.automation.utils.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import org.testng.Assert;
@@ -23,7 +25,6 @@ public class RateLimitTests implements BaseRestInterface {
     private static final String POST_STUB_PATH = "/rate-limit-post-check";
     private static final String UNLIMITED_ENDPOINT_KEY = "rateLimitDemoUnlimited";
     private static final String USERS_ENDPOINT_KEY = "users";
-    private static final int USERS_PERMITS_PER_SECOND = 100;
     private static final String OVERRIDE_ENDPOINT_KEY = "rateLimitDemoA";
     private static final int OVERRIDE_PERMITS_PER_SECOND = 5;
 
@@ -86,8 +87,10 @@ public class RateLimitTests implements BaseRestInterface {
     @Description("A burst of calls through the 3-arg postToOverrideBaseUri override path (implicitly keyed to "
             + "'users') is paced per users.rate.limit.per.second, closing that method's rate-limiting gap")
     public void shouldPaceThreeArgPostToOverrideBaseUri() {
-        int burstSize = USERS_PERMITS_PER_SECOND + 2;
-        long minGapMs = (long) Math.ceil(1000.0 / USERS_PERMITS_PER_SECOND);
+        double usersPermitsPerSecond = Double.parseDouble(ConfigLoader.load().getProperty(
+                USERS_ENDPOINT_KEY + Constants.RATE_LIMIT_PER_SECOND_SUFFIX).trim());
+        int burstSize = (int) usersPermitsPerSecond + 2;
+        long minGapMs = (long) Math.ceil(1000.0 / usersPermitsPerSecond);
         long theoreticalMinimumMs = minGapMs * (burstSize - 1);
         // generous ceiling: rules out double-pacing (twice the gaps) while tolerating scheduling jitter
         long upperBoundMs = theoreticalMinimumMs * 2 + 2000;
@@ -101,7 +104,7 @@ public class RateLimitTests implements BaseRestInterface {
 
         Assert.assertTrue(elapsedMs >= theoreticalMinimumMs,
                 "Expected elapsed time (" + elapsedMs + "ms) for " + burstSize + " calls through the 3-arg "
-                        + "postToOverrideBaseUri override path (limit " + USERS_PERMITS_PER_SECOND
+                        + "postToOverrideBaseUri override path (limit " + usersPermitsPerSecond
                         + "/s) to be >= the theoretical minimum (" + theoreticalMinimumMs + "ms)");
         Assert.assertTrue(elapsedMs <= upperBoundMs,
                 "Expected elapsed time (" + elapsedMs + "ms) to be <= " + upperBoundMs

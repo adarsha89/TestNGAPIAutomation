@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="ReqresAutomationSuite" parallel="classes" thread-count="4">
+<suite name="ReqresAutomationSuite" parallel="classes" thread-count="10">
 
     <listeners>
         <listener class-name="com.reqres.automation.CustomTestNGListener"/>
