@@ -23,6 +23,8 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -150,11 +152,13 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
                 .willReturn(WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
                         .withBody(refreshResponseJson("masking-verification-access-token", 3600))));
 
+        Set<String> attachmentFileNamesBeforeCall = existingAttachmentFileNames();
+
         restService().postToOverrideBaseUriAndVerify(
                 stubServer.stubUrl(""), TARGET_PATH, "oauth2RefreshTokenMaskingDemo", "{}",
                 ResponseExpectation.status(200));
 
-        String tokenRequestAttachment = readTokenEndpointRequestAttachment();
+        String tokenRequestAttachment = readTokenEndpointRequestAttachment(attachmentFileNamesBeforeCall);
         Assert.assertNotNull(tokenRequestAttachment,
                 "Expected an Allure request attachment recorded for the token endpoint call");
         Assert.assertTrue(tokenRequestAttachment.contains("refresh_token=***MASKED***"),
@@ -166,10 +170,28 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
                         + tokenRequestAttachment);
     }
 
-    // both the token endpoint call and the downstream target call go through the same filter,
-    // so pick the request attachment (identified by the "Query Params:" line, response has none)
-    // whose URL matches the stubbed token endpoint rather than assuming it's the most recent one
-    private String readTokenEndpointRequestAttachment() throws IOException {
+    // the stub server's port is stable across every method in this class, so a stubbed URL
+    // match alone can't tell this call's attachment apart from an earlier method's; snapshot
+    // the attachment file names before the call and keep only files absent from that snapshot,
+    // then apply the existing URL/"Query Params:" markers to pick the token-endpoint request
+    private Set<String> existingAttachmentFileNames() throws IOException {
+        Path resultsDir = Path.of("target", "allure-results");
+        if (!Files.isDirectory(resultsDir)) {
+            return Set.of();
+        }
+        try (Stream<Path> files = Files.list(resultsDir)) {
+            return files
+                    .map(path -> path.getFileName().toString())
+                    .filter(name -> name.contains("-attachment"))
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    // reads only attachments this test's own call produced (absent from the pre-call
+    // snapshot), so a stable port shared with earlier methods in this class can't cause
+    // a different test's attachment to be picked
+    private String readTokenEndpointRequestAttachment(Set<String> attachmentFileNamesBeforeCall)
+            throws IOException {
         Path resultsDir = Path.of("target", "allure-results");
         if (!Files.isDirectory(resultsDir)) {
             return null;
@@ -178,9 +200,10 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
         try (Stream<Path> files = Files.list(resultsDir)) {
             return files
                     .filter(path -> path.getFileName().toString().contains("-attachment"))
+                    .filter(path -> !attachmentFileNamesBeforeCall.contains(path.getFileName().toString()))
                     .map(this::readFileQuietly)
                     .filter(content -> content.contains(urlMarker) && content.contains("Query Params:"))
-                    .reduce((first, second) -> second)
+                    .findFirst()
                     .orElse(null);
         }
     }
