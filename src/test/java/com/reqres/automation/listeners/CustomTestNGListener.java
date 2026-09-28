@@ -1,4 +1,4 @@
-package com.reqres.automation;
+package com.reqres.automation.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reqres.automation.utils.FlakyTestDetector;

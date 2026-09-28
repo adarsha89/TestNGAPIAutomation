@@ -1,5 +1,7 @@
 package com.reqres.automation;
 
+import com.reqres.automation.listeners.CustomTestNGListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;

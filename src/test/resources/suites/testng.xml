@@ -3,7 +3,7 @@
 <suite name="ReqresAutomationSuite" parallel="classes" thread-count="10" data-provider-thread-count="8">
 
     <listeners>
-        <listener class-name="com.reqres.automation.CustomTestNGListener"/>
+        <listener class-name="com.reqres.automation.listeners.CustomTestNGListener"/>
     </listeners>
 
     <test name="AllApiTests">

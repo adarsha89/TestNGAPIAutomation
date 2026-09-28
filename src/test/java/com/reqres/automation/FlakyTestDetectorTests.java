@@ -3,6 +3,7 @@ package com.reqres.automation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reqres.automation.fixtures.FlappyFixture;
+import com.reqres.automation.listeners.CustomTestNGListener;
 import com.reqres.automation.utils.FlakyTestDetector;
 import com.reqres.automation.utils.RunHistoryStore;
 import io.qameta.allure.Description;

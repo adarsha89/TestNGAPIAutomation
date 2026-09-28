@@ -3,6 +3,7 @@ package com.reqres.automation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reqres.automation.fixtures.CountingFixture;
+import com.reqres.automation.listeners.CustomTestNGListener;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import org.testng.Assert;
