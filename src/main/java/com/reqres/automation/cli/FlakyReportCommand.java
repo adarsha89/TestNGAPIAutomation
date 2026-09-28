@@ -36,18 +36,19 @@ public final class FlakyReportCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        List<Map<String, Boolean>> outcomeSets = runHistoryStore.load();
-        if (outcomeSets.size() < 2) {
-            CliHtmlReportWriter.write(Path.of(Constants.FLAKY_REPORT_FILE), "Flaky Test Report", Set.of());
-            return 0;
-        }
-
-        Map<String, Boolean> current = outcomeSets.get(0);
-        List<Map<String, Boolean>> priors = outcomeSets.subList(1, outcomeSets.size());
-
-        Set<String> flaky = FlakyTestDetector.computeFlakyScenarios(current, priors);
+        Set<String> flaky = findFlakyScenarios(runHistoryStore.load());
         flaky.forEach(System.out::println);
         CliHtmlReportWriter.write(Path.of(Constants.FLAKY_REPORT_FILE), "Flaky Test Report", new TreeSet<>(flaky));
         return 0;
+    }
+
+    // Needs a current run plus at least one prior to compare against.
+    private static Set<String> findFlakyScenarios(List<Map<String, Boolean>> outcomeSets) {
+        if (outcomeSets.size() < 2) {
+            return Set.of();
+        }
+        Map<String, Boolean> current = outcomeSets.get(0);
+        List<Map<String, Boolean>> priors = outcomeSets.subList(1, outcomeSets.size());
+        return FlakyTestDetector.computeFlakyScenarios(current, priors);
     }
 }
