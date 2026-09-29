@@ -8,10 +8,6 @@ configuration, request building, masked logging, and reporting.
   <img src="./project.svg" alt="API Automation Framework Architecture">
 </p>
 
-An architecture reference (basic + detailed diagrams, component reference, request-lifecycle walkthrough)
-is available for onboarding — ask in Claude Code to regenerate/open it, or see `docs/` for prior
-requirements/plans/reviews produced by the agent pipeline described below.
-
 ## Tech stack
 
 | Concern | Library |
@@ -140,9 +136,3 @@ code-quality scans and dashboards. Not required to run tests.
 ```bash
 docker compose -f infra/docker-compose.yml up -d
 ```
-
-## Automation code changes
-
-Automation code changes (new/changed test coverage) in this repo go through the multi-agent pipeline
-defined in `.claude/agents/` and documented in `CLAUDE.md`:
-`task-analysis-agent` → `planning-agent` → `coding-agent` → `code-review-agent` → `code-quality-agent`.
