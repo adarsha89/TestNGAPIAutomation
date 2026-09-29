@@ -22,6 +22,9 @@ src/test/resources/data/previousTestResults/run-*.json
 # Local Allure CLI binary cache downloaded by the allure-maven plugin
 .allure/
 
+# SonarQube scanner work directory (check-code-quality)
+.scannerwork/
+
 # Logs
 *.log
 logs/
@@ -59,7 +62,8 @@ APIKey.txt
 # Claude Code local settings - the harness may record literal command
 # strings (including secrets passed via env vars on the command line,
 # e.g. SONAR_TOKEN) into its local permission-allow list. Never commit.
-.claude/settings.local.json
+.claude/settings.local.
+CLAUDE.md
 .claude
 docs
-CLAUDE.md
+.ai
