@@ -32,7 +32,7 @@ public class RunHistoryStoreTests {
         }
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("Two persist() calls on the same store produce two distinct run-*.json files on disk, "
             + "even when issued back-to-back")
     public void shouldWriteDistinctFilesForConsecutivePersistCalls() throws IOException {

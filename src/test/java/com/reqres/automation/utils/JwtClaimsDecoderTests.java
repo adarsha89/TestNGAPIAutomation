@@ -22,7 +22,7 @@ public class JwtClaimsDecoderTests {
     private static final String WELL_FORMED_JWT =
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LWNsaWVudCIsImV4cCI6NDEwMjQ0NDgwMH0.sig";
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A well-formed JWT with a numeric exp claim decodes to the exact Instant that epoch-seconds value "
             + "represents")
     public void shouldDecodeNumericExpClaimToMatchingInstant() {
@@ -49,7 +49,7 @@ public class JwtClaimsDecoderTests {
         };
     }
 
-    @Test(groups = {"utils", "regression"}, dataProvider = "malformedOrMissingExp")
+    @Test(priority = 3, groups = {"utils", "regression"}, dataProvider = "malformedOrMissingExp")
     @Description("A missing/non-numeric exp claim, or a malformed compact serialization, returns an absent result "
             + "rather than throwing")
     public void shouldReturnEmptyForMalformedOrMissingExp(String jwt) {

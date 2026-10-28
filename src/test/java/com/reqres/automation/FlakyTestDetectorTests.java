@@ -32,7 +32,7 @@ public class FlakyTestDetectorTests {
     private static final String SCENARIO_A = "com.example.Tests.methodA";
     private static final String SCENARIO_B = "com.example.Tests.methodB";
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A scenario that passes in every run (current + priors) is never flagged flaky")
     public void shouldNotFlagAlwaysPassingScenario() {
         Set<String> flaky = FlakyTestDetector.computeFlakyScenarios(
@@ -42,7 +42,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(flaky.isEmpty(), "Expected no flaky scenarios, got: " + flaky);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A scenario that fails in every run (current + priors) is never flagged flaky")
     public void shouldNotFlagAlwaysFailingScenario() {
         Set<String> flaky = FlakyTestDetector.computeFlakyScenarios(
@@ -52,7 +52,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(flaky.isEmpty(), "Expected no flaky scenarios, got: " + flaky);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A scenario with a mix of pass and fail across current + prior runs is flagged flaky")
     public void shouldFlagInconsistentScenarioAcrossRuns() {
         Set<String> flaky = FlakyTestDetector.computeFlakyScenarios(
@@ -62,7 +62,7 @@ public class FlakyTestDetectorTests {
         Assert.assertEquals(flaky, Set.of(SCENARIO_A));
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A scenario with no prior history is never flagged flaky on that basis alone")
     public void shouldNotFlagScenarioWithNoPriorHistory() {
         Set<String> flaky = FlakyTestDetector.computeFlakyScenarios(Map.of(SCENARIO_A, false), List.of());
@@ -70,7 +70,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(flaky.isEmpty(), "Expected no flaky scenarios, got: " + flaky);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("Two distinct scenarios (different data-provider rows of the same method, keyed by method + "
             + "parameters) each with their own consistent history are tracked independently - neither is flagged "
             + "flaky just because the other one's outcome differs")
@@ -83,7 +83,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(flaky.isEmpty(), "Expected no flaky scenarios, got: " + flaky);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("RunHistoryStore.load() returns an empty history (no exception) when the directory doesn't exist")
     public void shouldReturnEmptyHistoryForMissingDirectory() throws IOException {
         Path missingDirectory = Files.createTempDirectory("run-history-missing").resolve("does-not-exist");
@@ -92,7 +92,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(store.load().isEmpty());
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("RunHistoryStore.load() skips an unreadable/malformed prior-run file rather than throwing")
     public void shouldSkipMalformedPriorRunFile() throws IOException {
         Path directory = Files.createTempDirectory("run-history-malformed");
@@ -103,7 +103,7 @@ public class FlakyTestDetectorTests {
         Assert.assertTrue(store.load().isEmpty());
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A real standalone TestNG run of FlappyFixture (separate JVM, see NestedRunSandbox) that passes, "
             + "followed by a second separate run that fails - both pointed at the same isolated previousTestResults "
             + "directory via a system-property override - has the second run's summary flag the scenario as flaky, "

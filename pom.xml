@@ -21,6 +21,8 @@
 
         <!-- Overridable via -Dgroups=smoke / -Dgroups=regression on the command line -->
         <groups></groups>
+        <!-- Blank = defer to MUTATION_ENABLED in config/*.properties; -DMUTATION_ENABLED=true|false overrides it -->
+        <MUTATION_ENABLED></MUTATION_ENABLED>
 
         <rest-assured.version>5.4.0</rest-assured.version>
         <testng.version>7.9.0</testng.version>
@@ -143,6 +145,9 @@
                         <suiteXmlFile>src/test/resources/suites/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <groups>${groups}</groups>
+                    <systemPropertyVariables>
+                        <MUTATION_ENABLED>${MUTATION_ENABLED}</MUTATION_ENABLED>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
@@ -175,4 +180,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>mutation-testing</id>
+            <properties>
+                <groups>mutation</groups>
+                <MUTATION_ENABLED>true</MUTATION_ENABLED>
+            </properties>
+        </profile>
+    </profiles>
 </project>

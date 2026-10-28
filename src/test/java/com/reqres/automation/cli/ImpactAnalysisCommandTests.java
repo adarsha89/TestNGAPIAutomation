@@ -17,7 +17,7 @@ public class ImpactAnalysisCommandTests {
     private static final File SUMMARY_FILE = new File("target/test-result-summary.json");
     private static final File TEST_OUTPUT_DIR = new File("test-output");
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("impact-analysis prints exactly the test names TestImpactAnalyzer.getTestcasesImpacted "
             + "returns for the same changed area, and triggers no test execution")
     public void shouldPrintImpactedTestsMatchingAnalyzerDirectly() throws Exception {
@@ -36,7 +36,7 @@ public class ImpactAnalysisCommandTests {
         Assert.assertEquals(TEST_OUTPUT_DIR.exists(), testOutputExistedBefore, "call() must not trigger a test run");
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("impact-analysis with no --changed-area prints every test class in the dependency graph")
     public void shouldPrintAllTestsWhenChangedAreaOmitted() throws Exception {
         ImpactAnalysisCommand command = CommandLine.populateCommand(new ImpactAnalysisCommand());

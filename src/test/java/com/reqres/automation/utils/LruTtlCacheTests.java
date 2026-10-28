@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 @Story("Generic bounded LRU + TTL cache mechanics")
 public class LruTtlCacheTests {
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("A second get() for the same key within TTL returns the same cached value, without needing the "
             + "loader to run again")
     public void shouldServeFreshEntryFromCacheWithinTtl() {
@@ -24,7 +24,7 @@ public class LruTtlCacheTests {
         Assert.assertEquals(cache.get("key"), "value");
     }
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("get() after the TTL has elapsed returns null/absent, exactly as an uncached first lookup")
     public void shouldTreatEntryAsAbsentOnceTtlElapses() throws InterruptedException {
         LruTtlCache<String, String> cache = new LruTtlCache<>(4, 200);
@@ -36,7 +36,7 @@ public class LruTtlCacheTests {
         Assert.assertNull(cache.get("key"), "Expected the entry to be treated as absent once its TTL elapsed");
     }
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("Inserting capacity + 1 distinct keys evicts specifically the least-recently-used one - keys "
             + "touched via get() before the insert that trips eviction survive; the untouched one is evicted")
     public void shouldEvictLeastRecentlyUsedEntryWhenCapacityExceeded() {

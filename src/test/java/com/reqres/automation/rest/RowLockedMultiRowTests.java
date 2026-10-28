@@ -45,7 +45,7 @@ public class RowLockedMultiRowTests implements BaseRestInterface {
         return CLAIMED_ROWS.get();
     }
 
-    @Test(groups = {"rest", "row-locked", "multi-row", "regression", "row-locked-multi"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "multi-row", "regression", "row-locked-multi"})
     @Description("Claim 3 rows in one test, run fetch+create+update+delete once per row, and confirm no two "
             + "rows are ever the same claimed slot at once")
     public void shouldDriveFullLifecycleAcrossThreeClaimedRows() {

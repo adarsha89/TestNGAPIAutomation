@@ -13,7 +13,7 @@ import java.util.Map;
 @Story("CLI subcommand wiring")
 public class CliMainTests {
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("CliMain registers both subcommands under their expected names")
     public void shouldRegisterBothSubcommands() {
         CommandLine commandLine = new CommandLine(new CliMain());
@@ -24,7 +24,7 @@ public class CliMainTests {
         Assert.assertTrue(subcommands.containsKey("flaky-report"));
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("Invoking impact-analysis without --changed-area falls back to the full dependency graph and "
             + "succeeds")
     public void shouldSucceedWhenChangedAreaOmitted() {

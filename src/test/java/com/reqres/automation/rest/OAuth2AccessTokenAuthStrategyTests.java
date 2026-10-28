@@ -57,7 +57,7 @@ public class OAuth2AccessTokenAuthStrategyTests implements BaseRestInterface {
         TokenCacheRegistry.resetClockForTesting();
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("A first call with no cached token obtains an access token from the token endpoint and applies "
             + "it as Authorization: Bearer <access_token> on the outgoing request; exactly 1 token-endpoint call")
     public void shouldObtainAndApplyAccessToken() {
@@ -74,7 +74,7 @@ public class OAuth2AccessTokenAuthStrategyTests implements BaseRestInterface {
         stubServer.getServer().verify(1, WireMock.postRequestedFor(WireMock.urlEqualTo(TOKEN_PATH)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A second request for the same identity within the cached token's expires_in window is served "
             + "from cache - exactly 1 token-endpoint call total across both requests")
     public void shouldServeSecondRequestFromCacheWithinExpiry() {
@@ -94,7 +94,7 @@ public class OAuth2AccessTokenAuthStrategyTests implements BaseRestInterface {
         stubServer.getServer().verify(1, WireMock.postRequestedFor(WireMock.urlEqualTo(TOKEN_PATH)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("Once the cached token's real expiry has passed (simulated via an injected Clock, no real sleep), "
             + "the next request is a cache miss - a second, fresh token-endpoint call is made and the new token "
             + "applied")
@@ -131,7 +131,7 @@ public class OAuth2AccessTokenAuthStrategyTests implements BaseRestInterface {
         };
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"}, dataProvider = "distinctIdentities")
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"}, dataProvider = "distinctIdentities")
     @Description("Two distinct client identities never share a cached token - each identity's request carries "
             + "only its own token")
     public void shouldIsolateTokensByIdentity(String endpointKey, String expectedToken) {
@@ -146,7 +146,7 @@ public class OAuth2AccessTokenAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + expectedToken)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A token response with no expires_in/expires_at at all is still applied to the request, but "
             + "never cached - a subsequent call makes a fresh token-endpoint hit again")
     public void shouldApplyButNeverCacheTokenWithNoExpirySignal() {

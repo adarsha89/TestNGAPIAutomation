@@ -45,7 +45,7 @@ public class RetryHelperTests implements BaseRestInterface {
         stubServer.stop();
     }
 
-    @Test(groups = {"rest", "utils", "regression"})
+    @Test(priority = 3, groups = {"rest", "utils", "regression"})
     @Description("A first call returning 503 followed by a second call returning 200 results in an overall "
             + "success, with more than one call observed against the stub (proving a retry happened)")
     public void shouldRetryOnceOnTransientStatusThenSucceed() {
@@ -67,7 +67,7 @@ public class RetryHelperTests implements BaseRestInterface {
         stubServer.getServer().verify(2, WireMock.getRequestedFor(WireMock.urlEqualTo(STUB_PATH)));
     }
 
-    @Test(groups = {"rest", "utils", "regression"})
+    @Test(priority = 3, groups = {"rest", "utils", "regression"})
     @Description("A non-transient status (404) is returned immediately with no retry - zero additional calls "
             + "beyond the first")
     public void shouldNotRetryOnNonTransientStatus() {
@@ -79,7 +79,7 @@ public class RetryHelperTests implements BaseRestInterface {
         stubServer.getServer().verify(1, WireMock.getRequestedFor(WireMock.urlEqualTo(STUB_PATH)));
     }
 
-    @Test(groups = {"rest", "utils", "regression"}, timeOut = 15_000)
+    @Test(priority = 3, groups = {"rest", "utils", "regression"}, timeOut = 15_000)
     @Description("A target that always returns a transient status exhausts retries and fails after exactly "
             + "retry.max.attempts calls, bounded rather than hanging")
     public void shouldFailAfterExhaustingConfiguredMaxAttempts() {
@@ -92,7 +92,7 @@ public class RetryHelperTests implements BaseRestInterface {
         stubServer.getServer().verify(3, WireMock.getRequestedFor(WireMock.urlEqualTo(STUB_PATH)));
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("Each individual retry attempt against a configured endpoint key is paced, not just the first "
             + "one - elapsed time across all exhausted attempts meets the theoretical minimum for that many calls")
     public void shouldPaceEachRetryAttemptForConfiguredEndpointKey() {

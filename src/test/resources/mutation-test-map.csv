@@ -1,0 +1,7 @@
+mutation_id,priority,source_test_class,source_test_method,mutated_behavior,expected_assertion
+USER-ID-01,0,com.reqres.automation.rest.UserApiTests,shouldFetchExistingUserById,Response returns user id 3 for requested user id 2,body path data.id must equal requested id 2
+USER-SCHEMA-01,0,com.reqres.automation.rest.UserSchemaContractTests,shouldMatchUserResponseSchemaContract,Required response field data.email is omitted,user-schema.json requires data.email
+USER-PAGE-01,1,com.reqres.automation.rest.UserApiTests,shouldListUsersWithPagination,Response page differs from the requested page,body page must equal the requested page and pagination fields remain consistent
+USER-CREATE-01,2,com.reqres.automation.rest.UserApiTests,shouldCreateUserWithSyntheticData,Created response echoes an incorrect job value,body job must equal the submitted job
+AUTH-LOGIN-01,0,com.reqres.automation.rest.AuthenticationApiTests,shouldLoginWithFixtureCredentials,Successful login omits token and missing-password login returns the wrong error,token must be present on success and error must equal the fixture expectation
+AUTH-REGISTER-01,0,com.reqres.automation.rest.AuthenticationApiTests,shouldRegisterWithFixtureCredentials,Successful registration omits id and missing-password registration returns the wrong error,id and token must be present on success and error must equal the fixture expectation

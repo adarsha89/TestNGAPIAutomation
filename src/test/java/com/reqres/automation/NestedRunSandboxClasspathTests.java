@@ -32,7 +32,7 @@ public class NestedRunSandboxClasspathTests {
     private static final Path CLASSPATH_FILE =
             Path.of(System.getProperty("user.dir"), "target/test-classpath.txt");
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("resolveEffectiveClasspath()'s output is unaffected by mutating java.class.path, and does change "
             + "when target/test-classpath.txt's own contents change - proving the mechanism structurally cannot "
             + "regress to reading the parent JVM's own runtime classpath property")
@@ -61,7 +61,7 @@ public class NestedRunSandboxClasspathTests {
         }
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("Appending several hundred synthetic classpath entries so the resulting -cp value comfortably "
             + "exceeds 32,000 characters, the @argfile-based subprocess launch still completes correctly and the "
             + "written summary reports CountingFixture's actual outcome (2 PASS / 1 FAIL)")
@@ -93,7 +93,7 @@ public class NestedRunSandboxClasspathTests {
         Assert.assertEquals(counts.get("SKIP").asLong(), 0L);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("When target/test-classpath.txt is absent (e.g. the build phase that generates it was skipped), "
             + "resolveEffectiveClasspath() fails fast with a clear IllegalStateException naming the missing file "
             + "and the remediation, rather than silently falling back to java.class.path")

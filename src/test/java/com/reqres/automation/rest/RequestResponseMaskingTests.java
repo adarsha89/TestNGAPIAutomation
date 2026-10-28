@@ -37,7 +37,7 @@ public class RequestResponseMaskingTests implements BaseRestInterface {
     private static final String NON_SENSITIVE_QUERY_PARAM_NAME = "page";
     private static final String NON_SENSITIVE_QUERY_PARAM_VALUE = "1";
 
-    @Test(groups = {"rest", "regression"})
+    @Test(priority = 3, groups = {"rest", "regression"})
     @Description("A sensitive header/query param is masked and a non-sensitive header/query param is left "
             + "unmasked in the Allure-attached request/response record, while the real values still reach the API")
     public void shouldMaskSensitiveDataInAllureAttachmentsWithoutAffectingTheRealCall() throws IOException {
@@ -80,7 +80,7 @@ public class RequestResponseMaskingTests implements BaseRestInterface {
                 "Expected non-sensitive query param to remain unmasked in the attachment, got:\n" + combined);
     }
 
-    @Test(groups = {"rest", "regression"})
+    @Test(priority = 3, groups = {"rest", "regression"})
     @Description("LogMasker.isSensitive/maskValue correctly identify and mask sensitive names, and pass through "
             + "non-sensitive names unmasked - the same method used for both request and response header masking")
     public void shouldIdentifyAndMaskSensitiveNamesConsistently() {

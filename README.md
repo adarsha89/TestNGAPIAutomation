@@ -86,7 +86,24 @@ directly — if a helper doesn't yet exist for something a test needs, the gap g
 ./mvnw test                    # runs the full suite (src/test/resources/suites/testng.xml)
 ./mvnw test -Dgroups=smoke     # smoke-tagged tests only
 ./mvnw test -Dgroups=regression
+./mvnw -Pmutation-testing test  # sets MUTATION_ENABLED=true for existing critical testcases
 ```
+
+### Mutation testing workflow
+
+The model-agnostic [`mutation-testing` skill](.ai/skills/mutation-testing/SKILL.md)
+and [`mutation-testing-agent`](.ai/agents/mutation-testing-agent.md) define the
+workflow. `.ai/` is the source of truth; model-specific discovery locations use
+soft links to these files. The `mutation-testing` Maven profile selects the
+existing mutation-tagged test methods and sets the `MUTATION_ENABLED` Java
+system property to `true`. Those methods run their normal assertion path against
+deterministic local WireMock responses, first checking a baseline and then a
+mutated response. When the property is false (the default), they use their usual
+API calls unchanged. Mutations cover user lookup, schema, pagination, create
+echo, login, and registration. Links to the source methods are in
+[`mutation-test-map.csv`](src/test/resources/mutation-test-map.csv). The
+repository has no UI automation layer or general-purpose mutation controller;
+the opt-in mutation profile never calls the external API.
 
 Tests run in parallel — `src/test/resources/suites/testng.xml` uses `parallel="classes" thread-count="4"`.
 

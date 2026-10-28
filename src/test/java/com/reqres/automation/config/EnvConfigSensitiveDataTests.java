@@ -16,7 +16,7 @@ import java.util.Set;
 @Story("Sensitive data names sourced from config")
 public class EnvConfigSensitiveDataTests {
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("EnvConfig.getSensitiveDataNames() resolves the exact set parsed from a "
             + "sensitive.data.names property (comma-split, trimmed, lower-cased)")
     public void shouldResolveSensitiveDataNamesFromConfiguredProperty() {
@@ -28,7 +28,7 @@ public class EnvConfigSensitiveDataTests {
         Assert.assertEquals(config.getSensitiveDataNames(), Set.of("custom-secret", "another-one"));
     }
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("EnvConfig.getSensitiveDataNames() falls back to the compiled-in Constants.SENSITIVE_DATA "
             + "default when the sensitive.data.names property is absent")
     public void shouldFallBackToCompiledDefaultWhenPropertyAbsent() {
@@ -39,7 +39,7 @@ public class EnvConfigSensitiveDataTests {
         Assert.assertEquals(config.getSensitiveDataNames(), Constants.SENSITIVE_DATA);
     }
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("EnvConfig.getSensitiveDataNames() falls back to the compiled-in Constants.SENSITIVE_DATA "
             + "default when the sensitive.data.names property is present but blank")
     public void shouldFallBackToCompiledDefaultWhenPropertyBlank() {
@@ -51,7 +51,7 @@ public class EnvConfigSensitiveDataTests {
         Assert.assertEquals(config.getSensitiveDataNames(), Constants.SENSITIVE_DATA);
     }
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("A name added only via config (not present in the compiled default) is masked once resolved, "
             + "proving FR10's 'add a new sensitive name via config, no code change' acceptance criterion")
     public void shouldMaskOnlyNamesPresentInTheResolvedSet() {

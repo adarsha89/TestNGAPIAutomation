@@ -45,7 +45,7 @@ public class RowLockedConcurrencyTests implements BaseRestInterface {
 
     // dataProviderThreadCount isn't a @Test attribute on TestNG 7.9.0; parallel invocations come from
     // @DataProvider(parallel = true) plus data-provider-thread-count="8" in testng.xml instead.
-    @Test(groups = {"rest", "row-locked", "concurrency", "regression", "row-locked-concurrency"},
+    @Test(priority = 3, groups = {"rest", "row-locked", "concurrency", "regression", "row-locked-concurrency"},
             dataProvider = "concurrentClaimAttempts", dataProviderClass = RowLockedConcurrencyDataProvider.class)
     @Description("8 parallel invocations claim from a 5-row pool - the claimed-row set never exceeds pool "
             + "capacity (min(threadCount, numRows) = min(8, 5) = 5) and never holds a duplicate while a row is "

@@ -45,7 +45,7 @@ public class JwtBearerAuthStrategyTests implements BaseRestInterface {
         stubServer.stubPostResponse(TARGET_PATH, 200, "{}");
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("The pre-issued JWT configured for the endpoint key is applied as Authorization: Bearer <jwt>")
     public void shouldApplyPreIssuedJwtAsBearerCredential() {
         restService().postToOverrideBaseUriAndVerify(
@@ -56,7 +56,7 @@ public class JwtBearerAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + configuredJwt)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A JWT whose decoded exp claim is in the future is cached, keyed by the configured client id - "
             + "applying it again still sends the same token and the cache entry remains present")
     public void shouldCacheJwtWithFutureExpClaim() {
@@ -75,7 +75,7 @@ public class JwtBearerAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + configuredJwt)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A JWT whose decoded exp claim is already in the past is still applied to the request, but never "
             + "cached - not a stale cache hit")
     public void shouldNotCacheJwtWithPastExpClaim() {
@@ -92,7 +92,7 @@ public class JwtBearerAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + configuredJwt)));
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("A JWT with no exp claim at all is applied to the request but never cached")
     public void shouldApplyJwtWithNoExpClaimWithoutCaching() {
         String cacheKey = TokenCacheRegistry.buildKey("JWT_BEARER", "jwtBearerNoExpDemo", "jwt-bearer-noexp");
@@ -108,7 +108,7 @@ public class JwtBearerAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + configuredJwt)));
     }
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("Every JWT-bearing demo property used by this strategy's fixture variants is registered as "
             + "sensitive, so LogMasker masks it wherever it's logged")
     public void shouldTreatAllJwtDemoTokensAsSensitive() {

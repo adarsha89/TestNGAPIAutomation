@@ -24,7 +24,7 @@ import java.nio.file.Path;
 @Story("Real-time test result aggregation via the TestNG listener")
 public class TestResultAggregatorIntegrationTests {
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A real, standalone TestNG run of a small fixture (2 passing, 1 failing test method) drives "
             + "CustomTestNGListener's aggregator, whose written summary exactly matches the actual outcomes, each "
             + "test counted exactly once")

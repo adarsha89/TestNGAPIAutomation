@@ -21,7 +21,7 @@ public class WebhookReceiptTests implements BaseWebhookInterface {
     private static final String WEBHOOK_PATH = "/webhook/order-created";
     private static final String PAYLOAD = "{\"event\":\"order.created\",\"orderId\":\"ORD-1001\"}";
 
-    @Test(groups = {"webhook", "smoke", "regression"})
+    @Test(priority = 3, groups = {"webhook", "smoke", "regression"})
     @Description("Simulate an inbound webhook call and verify it was recorded")
     public void shouldRecordIncomingWebhookCall() {
         WebhookService service = webhookService();
@@ -33,7 +33,7 @@ public class WebhookReceiptTests implements BaseWebhookInterface {
         service.verifyCallReceived(WEBHOOK_PATH, PAYLOAD);
     }
 
-    @Test(groups = {"webhook", "smoke", "regression"})
+    @Test(priority = 3, groups = {"webhook", "smoke", "regression"})
     @Description("A call to an unrelated path is not recorded, even though the receiver has other recorded "
             + "traffic")
     public void shouldNotRecordWebhookCallForUnrelatedPath() {
@@ -46,7 +46,7 @@ public class WebhookReceiptTests implements BaseWebhookInterface {
         service.verifyNoCallReceived("/webhook/order-cancelled");
     }
 
-    @Test(groups = {"webhook", "negative", "regression"},
+    @Test(priority = 3, groups = {"webhook", "negative", "regression"},
             dataProvider = "mismatchedPayloads", dataProviderClass = WebhookReceiptNegativeDataProvider.class)
     @Description("A call sent to the expected path but with a mismatched payload is recorded at the path, "
             + "but not as a match for the expected payload")
@@ -61,7 +61,7 @@ public class WebhookReceiptTests implements BaseWebhookInterface {
         service.verifyCallReceivedWithDifferentPayload(WEBHOOK_PATH, PAYLOAD);
     }
 
-    @Test(groups = {"webhook", "negative", "regression"},
+    @Test(priority = 3, groups = {"webhook", "negative", "regression"},
             dataProvider = "mismatchedPaths", dataProviderClass = WebhookReceiptNegativeDataProvider.class)
     @Description("A call sent to a path other than the expected path is recorded at that mismatched path, "
             + "but does not count toward the expected path's matched-call record")

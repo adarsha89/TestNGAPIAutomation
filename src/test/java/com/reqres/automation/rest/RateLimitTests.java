@@ -42,7 +42,7 @@ public class RateLimitTests implements BaseRestInterface {
         stubServer.stop();
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"},
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"},
             dataProvider = "rateLimitedEndpoints", dataProviderClass = RateLimitDataProvider.class)
     @Description("A burst of calls against an endpoint key configured with <endpointKey>.rate.limit.per.second is "
             + "paced so the elapsed time is at least the theoretical minimum implied by that endpoint's own limit")
@@ -64,7 +64,7 @@ public class RateLimitTests implements BaseRestInterface {
                         + theoreticalMinimumMs + "ms)");
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of calls against an endpoint key with no configured rate limit completes with no added "
             + "delay - the no-op baseline this feature must not regress")
     public void shouldNotDelayCallsForUnconfiguredEndpoint() {
@@ -83,7 +83,7 @@ public class RateLimitTests implements BaseRestInterface {
                         + "no rate-limit pacing added, took " + elapsedMs + "ms");
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of calls through the 3-arg postToOverrideBaseUri override path (implicitly keyed to "
             + "'users') is paced per users.rate.limit.per.second, closing that method's rate-limiting gap")
     public void shouldPaceThreeArgPostToOverrideBaseUri() {
@@ -111,7 +111,7 @@ public class RateLimitTests implements BaseRestInterface {
                         + "ms, ruling out double-pacing of the same calls");
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of calls through the 5-arg postToOverrideBaseUri override path is paced per the "
             + "caller-supplied endpoint key's configured limit, closing that method's rate-limiting gap")
     public void shouldPaceFiveArgPostToOverrideBaseUri() {

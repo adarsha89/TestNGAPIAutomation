@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
  */
 public final class FlappyFixture {
 
-    @Test
+    @Test(priority = 3)
     public void flappy() {
         boolean shouldPass = Boolean.parseBoolean(System.getProperty("flappy.shouldPass", "true"));
         Assert.assertTrue(shouldPass, "Deliberately toggled outcome for flaky-detection testing");

@@ -57,7 +57,7 @@ public class UsersEndpointRateLimitChokePointTests {
         stubServer.stop();
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of plain getUserById(id) calls against the client's own configured 'users' endpoint "
             + "key is paced according to users.rate.limit.per.second with zero caller opt-in")
     public void shouldPaceUnoptedInGetUserByIdCallsAccordingToConfiguredUsersLimit() {
@@ -78,7 +78,7 @@ public class UsersEndpointRateLimitChokePointTests {
                         + theoreticalMinimumMs + "ms)");
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of getUserByIdWithFallback calls (fallback never triggers here since the primary "
             + "call succeeds) is still paced according to users.rate.limit.per.second")
     public void shouldPaceGetUserByIdWithFallbackCalls() {
@@ -99,7 +99,7 @@ public class UsersEndpointRateLimitChokePointTests {
                         + theoreticalMinimumMs + "ms)");
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of getUserByIdWithRetry calls (retry never triggers here since the primary call "
             + "succeeds) is still paced according to users.rate.limit.per.second")
     public void shouldPaceGetUserByIdWithRetryCalls() {
