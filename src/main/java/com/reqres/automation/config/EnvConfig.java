@@ -43,6 +43,10 @@ public final class EnvConfig {
         return properties.getProperty(Constants.API_KEY_PROPERTY, "");
     }
 
+    public boolean isMutationEnabled() {
+        return Boolean.parseBoolean(properties.getProperty(Constants.MUTATION_ENABLED_PROPERTY, "false").trim());
+    }
+
     public int getRequestTimeoutMs() {
         return Integer.parseInt(properties.getProperty(
                 Constants.REQUEST_TIMEOUT_PROPERTY,

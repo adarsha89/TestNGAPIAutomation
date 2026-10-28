@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 @Story("Reqres unknown/color resource API")
 public class UnknownResourceApiTests implements BaseRestInterface {
 
-    @Test(groups = {"rest", "regression"})
+    @Test(priority = 3, groups = {"rest", "regression"})
     @Description("GET /unknown lists color resources with consistent pagination fields")
     public void shouldListColorResources() {
         restService().getUnknownResourcesAndVerify(
@@ -24,7 +24,7 @@ public class UnknownResourceApiTests implements BaseRestInterface {
                         .andBodyValuePresent("data[0].id"));
     }
 
-    @Test(groups = {"rest", "regression"},
+    @Test(priority = 3, groups = {"rest", "regression"},
             dataProvider = "unknownResourceIds", dataProviderClass = UnknownResourceDataProvider.class)
     @Description("GET /unknown/{id} returns 200 with the resource for an existing id, 404 with no data key "
             + "for a nonexistent id")

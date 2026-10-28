@@ -15,17 +15,17 @@ import org.testng.annotations.Test;
  */
 public final class CountingFixture {
 
-    @Test
+    @Test(priority = 3)
     public void passOne() {
         Assert.assertTrue(true);
     }
 
-    @Test
+    @Test(priority = 3)
     public void passTwo() {
         Assert.assertTrue(true);
     }
 
-    @Test
+    @Test(priority = 3)
     public void failOne() {
         Assert.fail("Deliberate failure to exercise CustomTestNGListener#onTestFailure");
     }

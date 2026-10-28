@@ -14,7 +14,7 @@ public class TestImpactAnalyzerTests {
 
     private final TestImpactAnalyzer analyzer = new TestImpactAnalyzer();
 
-    @Test(groups = {"utils", "regression"},
+    @Test(priority = 3, groups = {"utils", "regression"},
             dataProvider = "changedAreasAndExpectedTests", dataProviderClass = TestImpactAnalyzerDataProvider.class)
     @Description("getTestcasesImpacted(changedAreas) returns exactly the expected test class names for a known "
             + "changed area - no extra, no missing")
@@ -25,7 +25,7 @@ public class TestImpactAnalyzerTests {
         Assert.assertEquals(impacted, expectedTestNames, "Case: " + caseName);
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("A changed area with no mapped tests returns an empty set, no exception, no false-positive match")
     public void shouldReturnEmptySetForUnmappedArea() {
         Set<String> impacted = analyzer.getTestcasesImpacted(List.of("nonexistent-area"));

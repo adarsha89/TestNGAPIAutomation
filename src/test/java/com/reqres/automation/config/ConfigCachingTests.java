@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 @Story("ConfigLoader.load() caches by resolved environment")
 public class ConfigCachingTests {
 
-    @Test(groups = {"config", "cache", "regression"})
+    @Test(priority = 3, groups = {"config", "cache", "regression"})
     @Description("A repeated ConfigLoader.load() call for the same env within a run does not increase the "
             + "classpath read count, and returns a value-equal EnvConfig both times")
     public void shouldNotReReadClasspathOnRepeatedLoadForSameEnv() {

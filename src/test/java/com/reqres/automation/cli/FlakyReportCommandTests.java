@@ -37,7 +37,7 @@ public class FlakyReportCommandTests {
         }
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("flaky-report prints exactly the scenario ids FlakyTestDetector.computeFlakyScenarios flags, "
             + "given the same run history, and triggers no test execution")
     public void shouldPrintFlakyScenariosMatchingDetectorDirectly() throws Exception {
@@ -61,7 +61,7 @@ public class FlakyReportCommandTests {
         Assert.assertEquals(TEST_OUTPUT_DIR.exists(), testOutputExistedBefore, "call() must not trigger a test run");
     }
 
-    @Test(groups = {"utils", "regression"})
+    @Test(priority = 3, groups = {"utils", "regression"})
     @Description("flaky-report prints nothing and returns 0 when fewer than two runs are stored")
     public void shouldPrintNothingWithFewerThanTwoStoredRuns() throws Exception {
         historyDirectory = Files.createTempDirectory("flaky-report-single-run");

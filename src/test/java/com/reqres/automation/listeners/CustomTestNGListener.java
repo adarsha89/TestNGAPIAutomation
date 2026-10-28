@@ -1,9 +1,12 @@
 package com.reqres.automation.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reqres.automation.mutation.ApiMutationSupport;
 import com.reqres.automation.utils.FlakyTestDetector;
 import com.reqres.automation.utils.RunHistoryStore;
 import com.reqres.automation.utils.TestResultAggregator;
+import io.qameta.allure.Allure;
+import io.qameta.allure.model.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,10 +36,29 @@ public class CustomTestNGListener implements ITestListener {
 
     /** System property to override {@link RunHistoryStore}'s default directory in tests. */
     private static final String RUN_HISTORY_DIRECTORY_PROPERTY = "runHistoryStore.directory";
+    private static final String MUTATION_LABEL_NAME = "tag";
+    private static final String MUTATION_LABEL_VALUE = "mutation";
 
     private final TestResultAggregator aggregator = new TestResultAggregator();
     private final FlakyTestDetector flakyTestDetector = new FlakyTestDetector();
     private final RunHistoryStore runHistoryStore = createRunHistoryStore();
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        boolean mutationEnabled = ApiMutationSupport.enabled();
+        Set<String> groups = new LinkedHashSet<>(Arrays.asList(result.getMethod().getGroups()));
+        if (mutationEnabled) {
+            groups.add(MUTATION_LABEL_VALUE);
+        } else {
+            groups.remove(MUTATION_LABEL_VALUE);
+        }
+        Allure.getLifecycle().getCurrentTestCase().ifPresent(uuid ->
+                Allure.getLifecycle().updateTestCase(uuid, testCase -> {
+                    for (String group : groups) {
+                        testCase.getLabels().add(new Label().setName(MUTATION_LABEL_NAME).setValue(group));
+                    }
+                }));
+    }
 
     @Override
     public void onTestSuccess(ITestResult result) {

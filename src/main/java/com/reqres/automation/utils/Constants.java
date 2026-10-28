@@ -27,6 +27,8 @@ public final class Constants {
     public static final String REQUEST_TIMEOUT_PROPERTY = "request.timeout.ms";
     public static final String ROW_POOL_CLAIM_TIMEOUT_MS_PROPERTY = "row.pool.claim.timeout.ms";
     public static final String SENSITIVE_DATA_PROPERTY = "sensitive.data.names";
+    // same name as the -DMUTATION_ENABLED system property, which takes priority when set
+    public static final String MUTATION_ENABLED_PROPERTY = "MUTATION_ENABLED";
 
     // Headers
     public static final String HEADER_AUTHORIZATION = "Authorization";

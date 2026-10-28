@@ -31,7 +31,7 @@ public class TokenCacheRegistryTests {
         };
     }
 
-    @Test(groups = {"cache", "regression"}, dataProvider = "capacityAndOverflow")
+    @Test(priority = 3, groups = {"cache", "regression"}, dataProvider = "capacityAndOverflow")
     @Description("Inserting capacity + 1 distinct identities evicts specifically the least-recently-used one - "
             + "a subsequent get() returns a miss only for the evicted key")
     public void shouldEvictLeastRecentlyUsedIdentityWhenCapacityExceeded(int capacity, int identityCount) {
@@ -57,7 +57,7 @@ public class TokenCacheRegistryTests {
                 "Expected the newly-inserted identity to remain cached");
     }
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("An entry whose real expiry has passed is never returned, independent of LRU/capacity state")
     public void shouldTreatEntryAsMissOnceRealExpiryPasses() {
         TokenCacheRegistry registry = new TokenCacheRegistry(4, GENEROUS_OUTER_TTL_MS);
@@ -69,7 +69,7 @@ public class TokenCacheRegistryTests {
         Assert.assertTrue(result.isEmpty(), "Expected an entry past its real expiry to be treated as a miss");
     }
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("Distinct identity keys never collide/overwrite each other's cached value")
     public void shouldIsolateDistinctIdentities() {
         TokenCacheRegistry registry = new TokenCacheRegistry(4, GENEROUS_OUTER_TTL_MS);
@@ -83,7 +83,7 @@ public class TokenCacheRegistryTests {
         Assert.assertEquals(registry.get("identity-b", clock).get().tokenValue(), "token-b");
     }
 
-    @Test(groups = {"cache", "regression"})
+    @Test(priority = 3, groups = {"cache", "regression"})
     @Description("An injected fixed Clock, not real elapsed time, drives the hit/miss decision - a token valid "
             + "against the real clock reads as expired once the injected clock is moved past its real expiry")
     public void shouldHonorInjectedClockOverRealElapsedTime() {

@@ -44,7 +44,7 @@ public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface
         stubServer.stop();
     }
 
-    @Test(groups = {"rest", "fallback", "regression"})
+    @Test(priority = 3, groups = {"rest", "fallback", "regression"})
     @Description("With fallback.on503.enabled=false (or absent), a primary 503 is returned unmodified, no "
             + "fallback call is made, and the outcome flag reports 'not from fallback'")
     public void shouldReturnRaw503UnchangedWhenFallbackDisabled() {
@@ -62,7 +62,7 @@ public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface
                 WireMock.urlEqualTo("/fallback/demo-off")));
     }
 
-    @Test(groups = {"rest", "fallback", "regression"})
+    @Test(priority = 3, groups = {"rest", "fallback", "regression"})
     @Description("With fallback.on503.enabled=true and a primary 503, exactly one call is made to the configured "
             + "local webhook path and its response is returned instead, with the outcome flag reporting 'from "
             + "fallback'")
@@ -83,7 +83,7 @@ public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface
                 WireMock.urlEqualTo(FALLBACK_ON_WEBHOOK_PATH)));
     }
 
-    @Test(groups = {"rest", "fallback", "regression"})
+    @Test(priority = 3, groups = {"rest", "fallback", "regression"})
     @Description("Fallback never triggers for any status other than exactly 503 - a primary 500 is returned "
             + "unchanged and no fallback call is made, even with fallback enabled for that endpoint key")
     public void shouldNotTriggerFallbackForNon503Status() {
@@ -101,7 +101,7 @@ public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface
                 WireMock.urlEqualTo(FALLBACK_ON_WEBHOOK_PATH)));
     }
 
-    @Test(groups = {"rest", "fallback", "regression"})
+    @Test(priority = 3, groups = {"rest", "fallback", "regression"})
     @Description("One endpoint key's fallback opt-in does not affect another endpoint key's 503 handling in the "
             + "same run - endpoint A (enabled) is served from fallback, endpoint B (disabled) returns its raw 503")
     public void shouldIsolateFallbackOptInPerEndpointKey() {
@@ -127,7 +127,7 @@ public class Fallback503Tests implements BaseWebhookInterface, BaseRestInterface
                 WireMock.urlEqualTo(FALLBACK_ISOLATION_B_WEBHOOK_PATH)));
     }
 
-    @Test(groups = {"rest", "rate-limit", "regression"})
+    @Test(priority = 3, groups = {"rest", "rate-limit", "regression"})
     @Description("A burst of primary calls through getFromOverrideBaseUriWithFallback is paced per the configured "
             + "endpoint key's limit before the fallback decision logic runs, closing that method's rate-limiting "
             + "gap - unchanged 200 primary responses prove the fallback/success outcome is unaffected")

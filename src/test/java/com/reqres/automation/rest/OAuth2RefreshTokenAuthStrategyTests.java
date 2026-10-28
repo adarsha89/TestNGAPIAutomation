@@ -63,7 +63,7 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
         TokenCacheRegistry.resetClockForTesting();
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("The refresh grant call (grant_type=refresh_token) is made against the token endpoint and the "
             + "resulting access token is applied as Authorization: Bearer <access_token>; exactly 1 call")
     public void shouldPerformRefreshGrantAndApplyAccessToken() {
@@ -83,7 +83,7 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
         stubServer.getServer().verify(1, WireMock.postRequestedFor(WireMock.urlEqualTo(TOKEN_PATH)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A second request for the same identity within the derived access token's expires_in window is "
             + "a cache hit - no second refresh-grant call")
     public void shouldServeSecondRequestFromCacheWithinExpiry() {
@@ -103,7 +103,7 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer cachehit-access-token")));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("Once the derived access token's real expiry has passed (simulated via an injected Clock), a "
             + "fresh refresh-grant call is made")
     public void shouldRefetchAfterDerivedAccessTokenExpires() {
@@ -130,7 +130,7 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
         stubServer.getServer().verify(2, WireMock.postRequestedFor(WireMock.urlEqualTo(TOKEN_PATH)));
     }
 
-    @Test(groups = {"config", "regression"})
+    @Test(priority = 3, groups = {"config", "regression"})
     @Description("Every refresh-token-bearing demo property used by this strategy's fixture variants is registered "
             + "as sensitive, so LogMasker masks it wherever it's logged")
     public void shouldTreatAllRefreshTokenDemoTokensAsSensitive() {
@@ -142,7 +142,7 @@ public class OAuth2RefreshTokenAuthStrategyTests implements BaseRestInterface {
                 LogMasker.isSensitive("oauth2RefreshTokenCacheMissDemo.auth.refresh.token", sensitiveNames));
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("The refresh_token form field sent to the token endpoint is masked in the Allure request "
             + "attachment, while the non-sensitive grant_type field stays visible")
     public void shouldMaskRefreshTokenFormBodyValueInTokenEndpointCallAttachment() throws IOException {

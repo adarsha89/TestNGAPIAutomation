@@ -47,7 +47,7 @@ public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterfac
         stubServer.stop();
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("API_KEY strategy on the users endpoint sends the configured api.key as the x-api-key header, "
             + "verified against a local stub target")
     public void shouldApplyApiKeyStrategyForUsersEndpoint() {
@@ -61,7 +61,7 @@ public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterfac
                 .withHeader("x-api-key", WireMock.equalTo(configuredApiKey)));
     }
 
-    @Test(groups = {"webhook", "auth", "regression"})
+    @Test(priority = 3, groups = {"webhook", "auth", "regression"})
     @Description("The BASIC strategy sends Authorization: Basic base64(username:password) built from "
             + "webhookFallbackDemo.auth.username/password, verified via WireMock against the local webhook receiver")
     public void shouldApplyBasicAuthStrategy() {
@@ -81,7 +81,7 @@ public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterfac
                 .withHeader("Authorization", WireMock.equalTo(expectedAuthHeader)));
     }
 
-    @Test(groups = {"webhook", "auth", "regression"})
+    @Test(priority = 3, groups = {"webhook", "auth", "regression"})
     @Description("The BEARER strategy sends Authorization: Bearer <token> from "
             + "webhookFallbackDemoBearer.auth.bearer.token, verified via WireMock against the local webhook receiver")
     public void shouldApplyBearerAuthStrategy() {
@@ -99,7 +99,7 @@ public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterfac
                 .withHeader("Authorization", WireMock.equalTo(expectedAuthHeader)));
     }
 
-    @Test(groups = {"webhook", "auth", "regression"})
+    @Test(priority = 3, groups = {"webhook", "auth", "regression"})
     @Description("An endpoint key with no *.auth.strategy property at all resolves to no mechanism - the call "
             + "succeeds with no Authorization/x-api-key header added, and no exception is thrown resolving it")
     public void shouldNotAddAnyHeaderWhenNoAuthStrategyConfigured() {
@@ -117,7 +117,7 @@ public class AuthStrategyTests implements BaseWebhookInterface, BaseRestInterfac
                 .withHeader("x-api-key", WireMock.absent()));
     }
 
-    @Test(groups = {"auth", "regression"})
+    @Test(priority = 3, groups = {"auth", "regression"})
     @Description("Credential-bearing properties for the BASIC/BEARER demonstration endpoint keys are registered "
             + "as sensitive so LogMasker masks them, without any LogMasker code change")
     public void shouldTreatDemoCredentialPropertiesAsSensitive() {

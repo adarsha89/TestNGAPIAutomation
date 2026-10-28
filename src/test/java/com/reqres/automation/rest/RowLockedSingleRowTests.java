@@ -44,7 +44,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
         return CLAIMED_ROW.get().row();
     }
 
-    @Test(groups = {"rest", "row-locked", "smoke", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "smoke", "regression", "row-locked-single"})
     @Description("GET /users/{id} using a claimed row's userId")
     public void shouldFetchExistingUserUsingClaimedRow() {
         UserPoolRow row = claimedRow();
@@ -54,7 +54,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
                         .andBodyValuePresent("data.email"));
     }
 
-    @Test(groups = {"rest", "row-locked", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "regression", "row-locked-single"})
     @Description("POST /users using a claimed row's name/job")
     public void shouldCreateUserUsingClaimedRow() {
         UserPoolRow row = claimedRow();
@@ -68,7 +68,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
                         .andBodyValuePresent("createdAt"));
     }
 
-    @Test(groups = {"rest", "row-locked", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "regression", "row-locked-single"})
     @Description("PUT /users/{id} at a claimed row's userId with the row's job")
     public void shouldUpdateUserUsingClaimedRow() {
         UserPoolRow row = claimedRow();
@@ -80,14 +80,14 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
                         .andBodyValuePresent("updatedAt"));
     }
 
-    @Test(groups = {"rest", "row-locked", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "regression", "row-locked-single"})
     @Description("DELETE /users/{id} at a claimed row's userId")
     public void shouldDeleteUserUsingClaimedRow() {
         UserPoolRow row = claimedRow();
         restService().deleteUserAndVerify(row.userId(), ResponseExpectation.status(204));
     }
 
-    @Test(groups = {"rest", "row-locked", "register", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "register", "regression", "row-locked-single"})
     @Description("POST /register using a claimed row's email/registerPassword")
     public void shouldRegisterUsingClaimedRow() {
         UserPoolRow row = claimedRow();
@@ -100,7 +100,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
                         .andBodyValuePresent("token"));
     }
 
-    @Test(groups = {"rest", "row-locked", "login", "regression", "row-locked-single"})
+    @Test(priority = 3, groups = {"rest", "row-locked", "login", "regression", "row-locked-single"})
     @Description("POST /login using a claimed row's email/loginPassword")
     public void shouldLoginUsingClaimedRow() {
         UserPoolRow row = claimedRow();
@@ -110,7 +110,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
                 ResponseExpectation.status(200).andBodyValuePresent("token"));
     }
 
-    @Test(groups = {"rest", "row-locked", "regression", "row-locked-single"}, expectedExceptions = AssertionError.class)
+    @Test(priority = 3, groups = {"rest", "row-locked", "regression", "row-locked-single"}, expectedExceptions = AssertionError.class)
     @Description("A row claimed by @BeforeMethod is still released by @AfterMethod once this test fails - "
             + "the release-side proof is in shouldConfirmRowReleasedAfterFailingClaimTest")
     public void shouldReleaseRowBackToPoolEvenWhenClaimBlockFails() {
@@ -119,7 +119,7 @@ public class RowLockedSingleRowTests implements BaseRestInterface {
         Assert.fail("deliberate failure inside claim scope to verify release-on-failure");
     }
 
-    @Test(groups = {"rest", "row-locked", "regression"},
+    @Test(priority = 3, groups = {"rest", "row-locked", "regression"},
             dependsOnMethods = "shouldReleaseRowBackToPoolEvenWhenClaimBlockFails", alwaysRun = true)
     @Description("Confirms the exact claim held by the failing test above was released by its @AfterMethod - "
             + "checks that claim's own release state, not pool/row-key membership, so a legitimate reclaim of "

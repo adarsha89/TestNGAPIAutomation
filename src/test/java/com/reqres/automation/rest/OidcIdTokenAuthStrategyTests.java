@@ -63,7 +63,7 @@ public class OidcIdTokenAuthStrategyTests implements BaseRestInterface {
         TokenCacheRegistry.resetClockForTesting();
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("The id_token (JWT) is obtained from the token endpoint and applied as "
             + "Authorization: Bearer <id_token> on the outgoing request; exactly 1 token-endpoint call")
     public void shouldObtainAndApplyIdToken() {
@@ -90,7 +90,7 @@ public class OidcIdTokenAuthStrategyTests implements BaseRestInterface {
         };
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"}, dataProvider = "expirySourceVariants")
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"}, dataProvider = "expirySourceVariants")
     @Description("A cache hit/miss decision behaves correctly regardless of whether expiry comes from the HTTP "
             + "expires_in field, the decoded JWT exp claim, or both agreeing - a second call within the derived "
             + "expiry window is a cache hit (no second token-endpoint call)")
@@ -111,7 +111,7 @@ public class OidcIdTokenAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + idToken)));
     }
 
-    @Test(groups = {"rest", "auth", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "regression"})
     @Description("A malformed/non-JWT id_token yields no derivable exp claim - the token is still applied to the "
             + "outgoing request (no exception propagated) but the no-expiry-signal policy means it is never cached")
     public void shouldApplyMalformedIdTokenWithoutCachingOrThrowing() {
@@ -131,7 +131,7 @@ public class OidcIdTokenAuthStrategyTests implements BaseRestInterface {
                 .withHeader("Authorization", WireMock.equalTo("Bearer " + MALFORMED_ID_TOKEN)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A cache miss attributable purely to the HTTP expires_in field: the id_token carries no exp claim, "
             + "so once the cached entry's HTTP-derived expiry passes (simulated via an injected Clock), the next "
             + "call re-hits the token endpoint")
@@ -154,7 +154,7 @@ public class OidcIdTokenAuthStrategyTests implements BaseRestInterface {
         stubServer.getServer().verify(2, WireMock.postRequestedFor(WireMock.urlEqualTo(TOKEN_PATH)));
     }
 
-    @Test(groups = {"rest", "auth", "cache", "regression"})
+    @Test(priority = 3, groups = {"rest", "auth", "cache", "regression"})
     @Description("A cache miss attributable purely to the JWT exp claim: the id_token's decoded exp is already in "
             + "the past and no expires_in field is present, so every subsequent call re-hits the token endpoint")
     public void shouldRefetchAfterJwtExpClaimExpiry() {
