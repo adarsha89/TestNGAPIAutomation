@@ -48,6 +48,7 @@ public final class Constants {
     public static final String UNKNOWN_BY_ID_PATH = "/unknown/{id}";
     public static final String LOGIN_PATH = "/login";
     public static final String REGISTER_PATH = "/register";
+    public static final String PROVIDED_ID_PATH = "/provided-ids";
 
     // Defaults
     public static final int DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
@@ -86,6 +87,9 @@ public final class Constants {
     // Deliberately unconfigured (no <key>.rate.limit.per.second) - proves the no-op pacing baseline
     // for RetryHelperTests' existing exact-call-count/timing assertions.
     public static final String RETRY_DEMO_ENDPOINT_KEY = "retryDemo";
+    // Deliberately unconfigured (no <key>.auth.strategy or <key>.rate.limit.per.second) - the
+    // provided-ID duplicate-check mock API is unauthenticated and unrated (see common.properties).
+    public static final String PROVIDED_IDS_ENDPOINT_KEY = "providedIds";
 
     // CLI HTML report output (see ImpactAnalysisCommand/FlakyReportCommand)
     public static final String CLI_REPORTS_DIR = "target/cli-reports";
