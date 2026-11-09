@@ -19,6 +19,8 @@ allure-report/
 extent-reports/
 # Generated per-run flaky-detection history - directory itself tracked via .gitkeep
 src/test/resources/data/previousTestResults/run-*.json
+# Generated, accumulating provided-ID record - directory itself tracked via .gitkeep
+src/test/resources/data/providedIds/*.csv
 # Local Allure CLI binary cache downloaded by the allure-maven plugin
 .allure/
 

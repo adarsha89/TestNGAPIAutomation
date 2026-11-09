@@ -25,6 +25,9 @@
             <class name="com.reqres.automation.rest.RateLimitTests"/>
             <class name="com.reqres.automation.rest.Fallback503Tests"/>
             <class name="com.reqres.automation.rest.RetryHelperTests"/>
+            <class name="com.reqres.automation.rest.ProvidedIdMockApiTests"/>
+            <class name="com.reqres.automation.rest.ProvidedIdMockApiConcurrencyTests"/>
+            <class name="com.reqres.automation.clients.rest.ProvidedIdStoreTests"/>
             <class name="com.reqres.automation.config.EnvConfigSensitiveDataTests"/>
             <class name="com.reqres.automation.config.ConfigCachingTests"/>
             <class name="com.reqres.automation.config.UsersEndpointRateLimitChokePointTests"/>

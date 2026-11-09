@@ -5,5 +5,8 @@
   "AuthStrategyTests": ["rest", "auth", "users"],
   "RateLimitTests": ["rest", "rate-limit", "users"],
   "Fallback503Tests": ["rest", "fallback", "users"],
-  "WebhookReceiptTests": ["webhook"]
+  "WebhookReceiptTests": ["webhook"],
+  "ProvidedIdMockApiTests": ["rest", "provided-ids"],
+  "ProvidedIdMockApiConcurrencyTests": ["rest", "provided-ids"],
+  "ProvidedIdStoreTests": ["provided-ids"]
 }
